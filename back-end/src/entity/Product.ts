@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm";
 
 @Entity()
 export class Product{
@@ -20,7 +20,9 @@ export class Product{
   @Column("simple-array")
   images!: string[];
 
-  @Column({type: "timestamp", default: ()=>"CURRENT_TIMESTAMP"})
+  @CreateDateColumn()
   createdAt!: Date;
 
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

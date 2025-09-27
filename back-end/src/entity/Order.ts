@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
-import { User } from "./User";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, Relation} from "typeorm";
+import { User } from "./User.js";
 
 @Entity()
 export class Order{
@@ -8,7 +8,7 @@ export class Order{
 
   @ManyToOne(()=> User, (user)=> user.orders)
   @JoinColumn({name: "userId"})
-  user!:User;
+  user!:Relation<User>;
 
   @Column("jsonb")
   orderItems!: { productId: number; quantity: number; price: number }[];
@@ -31,6 +31,14 @@ export class Order{
   @Column({ default: "Processing" })
   orderStatus!: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  calculateTotal(): number {
+    return this.orderItems.reduce((sum,item)=> sum+ item.price*item.quantity,0);
+  }
+  
 }
