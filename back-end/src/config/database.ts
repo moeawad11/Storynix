@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import {User} from "../entity/User.js";
-import { Product } from "../entity/Product.js";
+import { Book } from "../entity/Book.js";
 import { Order } from "../entity/Order.js";
 
 export const AppDataSource = new DataSource({
@@ -12,7 +12,17 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: true,
-  entities: [User, Product, Order],
+  entities: [User, Book, Order],
   migrations:[],
   subscribers:[],
 });
+
+export const initializeDB = async () =>{
+  try{
+    await AppDataSource.initialize();
+    console.log("Database connected successfully");
+  }catch(err){
+    console.error("DB init error", err);
+    process.exit(1);
+  }
+}
