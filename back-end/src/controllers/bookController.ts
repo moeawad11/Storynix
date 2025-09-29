@@ -165,7 +165,7 @@ export const deleteBook = async (req: AuthRequest, res: Response) => {
     res.status(204).send();
     
   }catch(err){
-    console.error('Error updating book:', err);
+    console.error('Error deleting book:', err);
     res.status(500).json({ message: `Server error while attempting to delete book with id=${id}.` });
   }
 }

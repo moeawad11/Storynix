@@ -4,15 +4,18 @@ import { initializeDB } from './config/database.js';
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
+import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 app.use("/api", bookRoutes);
+app.use("/api", orderRoutes);
 
 app.use((req,res)=>{
   res.status(404).json({message:"Route not found"});

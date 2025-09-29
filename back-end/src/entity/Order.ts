@@ -1,6 +1,13 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, Relation} from "typeorm";
 import { User } from "./User.js";
 
+interface OrderItem {
+  bookId: number; 
+  title: string; 
+  quantity: number; 
+  price: number;
+}
+
 @Entity()
 export class Order{
   @PrimaryGeneratedColumn()
@@ -11,7 +18,7 @@ export class Order{
   user!:Relation<User>;
 
   @Column("jsonb")
-  orderItems!: { productId: number; quantity: number; price: number }[];
+  orderItems!: OrderItem[];
 
   @Column()
   shippingAddress!: string;
@@ -22,6 +29,9 @@ export class Order{
   @Column({ type: "decimal", precision: 10, scale: 2 })
   totalPrice!: number;
 
+  @Column({nullable: true})
+  paymentIntentId!: string;
+
   @Column({ default: false })
   isPaid!: boolean;
 
@@ -31,14 +41,15 @@ export class Order{
   @Column({ default: "Processing" })
   orderStatus!: string;
 
+  @Column({default: false})
+  isDelivered!: boolean;
+
+  @Column({nullable: true})
+  deliveredAt!: Date;
+
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
-
-  calculateTotal(): number {
-    return this.orderItems.reduce((sum,item)=> sum+ item.price*item.quantity,0);
-  }
-  
 }
