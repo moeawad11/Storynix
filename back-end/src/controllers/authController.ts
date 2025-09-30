@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import { AppDataSource } from "../config/database.js";
 import {User} from "../entity/User.js";
-import { AuthRequest } from "../middleware/auth.js";
 import jwt from "jsonwebtoken";
 
 export const register = async (req:Request, res: Response)=>{
@@ -56,8 +55,4 @@ export const login = async (req:Request, res: Response)=>{
     console.log(err);
     res.status(500).json({message: "Server error"});
   }
-};
-
-export const getProfile = (req: AuthRequest, res: Response) =>{
-  res.json({message: "Protected route", user: req.user});
 };
