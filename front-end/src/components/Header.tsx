@@ -7,7 +7,7 @@ const Header: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
 
   const cartItemCount = 0;
-  const userName = user?.name.split(" ")[0] || "Profile";
+  const userName = user?.name?.split(" ")[0] || "Profile";
 
   const handleLogout = () => {
     logout();
@@ -56,8 +56,8 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 shadow-lg sticky top-0 z-50">
-      <div className="container flex justify-between items-center">
+    <header className="bg-gray-800 text-white shadow-lg sticky top-0 z-50">
+      <div className="container px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-2xl font-extrabold hover:text-gray-300">
           Storynix
         </Link>

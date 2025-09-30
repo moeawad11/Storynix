@@ -36,15 +36,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (token) fetchProfile(token);
+  }, [token]);
+
   const fetchProfile = async (jwtToken: string) => {
     try {
-      api.defaults.headers.common["Authorization"] = `Beader ${jwtToken}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
       const response = await api.get("/users/profile");
       setUser(response.data.user as User);
     } catch (err) {
       console.error("Token validation failed, logging out.", err);
       localStorage.removeItem("token");
       setToken(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +79,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   if (isLoading)
     return (
       <div className="text-center py-20 text-xl font-semibold">
-        Loading Application
+        Loading Application...
       </div>
     );
 
