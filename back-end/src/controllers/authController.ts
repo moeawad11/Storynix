@@ -20,7 +20,13 @@ export const register = async (req: Request, res: Response) => {
     await userRepo.save(user);
 
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      {
+        userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
       process.env.JWT_SECRET as string,
       { expiresIn: "1h" }
     );
@@ -49,7 +55,13 @@ export const login = async (req: Request, res: Response) => {
     if (!isMatch) return res.status(401).json({ message: "Invalid password" });
 
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      {
+        userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
       process.env.JWT_SECRET as string,
       { expiresIn: "1h" }
     );

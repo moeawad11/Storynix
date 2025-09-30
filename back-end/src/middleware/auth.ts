@@ -1,28 +1,34 @@
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-interface DecodedToken{
+interface DecodedToken {
   userId: number;
+  firstName: string;
+  lastName: string;
   email: string;
   role: string;
 }
 
-export interface AuthRequest extends Request{
+export interface AuthRequest extends Request {
   user?: DecodedToken;
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction)=>{
+export const authenticate = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
-  if(!authHeader){
-    return res.status(401).json({message: "Authorization header missing"});
+  if (!authHeader) {
+    return res.status(401).json({ message: "Authorization header missing" });
   }
 
-  const token = authHeader.split(" ")[1];  
-  if(!token){
-    return res.status(401).json({message: "Token missing"});
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Token missing" });
   }
- 
-  try{
+
+  try {
     const decodedToken = jwt.verify(
       token,
       process.env.JWT_SECRET as string
@@ -31,23 +37,22 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     req.user = decodedToken;
 
     next();
-  }catch(err){
-    res.status(403).json({message: "Invalid or expired token"});
+  } catch (err) {
+    res.status(403).json({ message: "Invalid or expired token" });
   }
 };
 
-
-export const authorize = (roles: string[])=>{
-  return (req: AuthRequest, res: Response, next: NextFunction)=>{
-    if(!req.user){
-      return res.status(401).json({message: "User not authenticated"})
+export const authorize = (roles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "User not authenticated" });
     }
 
-    if(!roles.includes(req.user.role)){
-      return res.status(403).json({message: "User not authorized to access this resource"});
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ message: "User not authorized to access this resource" });
     }
     next();
-  }
-}
-
-
+  };
+};

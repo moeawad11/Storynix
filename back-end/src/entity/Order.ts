@@ -1,21 +1,30 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, Relation} from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Relation,
+} from "typeorm";
 import { User } from "./User.js";
 
 interface OrderItem {
-  bookId: number; 
-  title: string; 
-  quantity: number; 
+  bookId: number;
+  title: string;
+  quantity: number;
   price: number;
 }
 
 @Entity()
-export class Order{
+export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(()=> User, (user)=> user.orders)
-  @JoinColumn({name: "userId"})
-  user!:Relation<User>;
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: "userId" })
+  user!: Relation<User>;
 
   @Column("jsonb")
   orderItems!: OrderItem[];
@@ -29,7 +38,7 @@ export class Order{
   @Column({ type: "decimal", precision: 10, scale: 2 })
   totalPrice!: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   paymentIntentId!: string;
 
   @Column({ default: false })
@@ -37,14 +46,14 @@ export class Order{
 
   @Column({ nullable: true })
   paidAt!: Date;
-  
+
   @Column({ default: "Processing" })
   orderStatus!: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   isDelivered!: boolean;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   deliveredAt!: Date;
 
   @CreateDateColumn()
