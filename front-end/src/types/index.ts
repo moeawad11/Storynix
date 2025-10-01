@@ -1,7 +1,8 @@
 export interface User {
-  id: string;
+  id: number;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   role: "user" | "admin";
 }
 
@@ -14,12 +15,11 @@ export interface AuthContextType {
 }
 
 export interface Order {
-  _id: string;
-  orderNumber: string;
-  totalAmount: number;
-  status: "Pending" | "Shipped" | "Delivered" | "Cancelled";
+  id: string;
+  totalPrice: number;
+  orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
-  items: {
+  orderItems: {
     bookId: string;
     title: string;
     quantity: number;

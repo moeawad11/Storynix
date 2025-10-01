@@ -1,10 +1,9 @@
-// src/pages/HomePage.tsx
 import React from "react";
 
 const HomePage: React.FC = () => {
   return (
     <div className="container mx-auto p-6 text-center py-20">
-      <h1 className="text-5xl font-extrabold text-indigo-700 mb-4">
+      <h1 className="text-4xl font-extrabold text-indigo-700 mb-4">
         Welcome to Storynix Bookstore
       </h1>
       <p className="text-xl text-gray-600">

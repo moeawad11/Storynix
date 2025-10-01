@@ -49,10 +49,10 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create an Account
+    <div className="flex justify-center items-center h-full min-h-[80vh] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
+        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-gray-900">
+          Create Account
         </h2>
 
         {error && (
@@ -72,7 +72,7 @@ const RegisterPage: React.FC = () => {
               type="text"
               autoComplete="given-name"
               required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm"
               placeholder="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
@@ -84,7 +84,7 @@ const RegisterPage: React.FC = () => {
               type="text"
               autoComplete="family-name"
               required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm"
               placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
@@ -98,7 +98,7 @@ const RegisterPage: React.FC = () => {
             type="email"
             autoComplete="email"
             required
-            className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +111,7 @@ const RegisterPage: React.FC = () => {
             type="password"
             autoComplete="new-password"
             required
-            className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

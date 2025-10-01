@@ -1,9 +1,7 @@
-// src/pages/BookDetailsPage.tsx
 import React from "react";
 import { useParams } from "react-router-dom";
 
 const BookDetailsPage: React.FC = () => {
-  // Use the hook to read the dynamic ID from the URL
   const { id } = useParams<{ id: string }>();
 
   return (

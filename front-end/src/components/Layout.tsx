@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="flex-grow container p-4">
+      <main className="flex-grow bg-gray-100">
         <Outlet />
       </main>
       <Footer />

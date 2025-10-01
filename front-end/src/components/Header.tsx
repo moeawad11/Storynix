@@ -7,8 +7,7 @@ const Header: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
 
   const cartItemCount = 0;
-  const userName = user?.name?.split(" ")[0] || "Profile";
-
+  const userName = user?.firstName?.split(" ")[0] || "Profile";
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
@@ -37,14 +36,14 @@ const Header: React.FC = () => {
           <>
             <Link
               to="/login"
-              className="hover:text-blue-200 block md:inline-block"
+              className="hover:text-blue-300 hover:bg-gray-700 transition-colors block md:inline-block px-4 py-3 md:py-0 md:px-0 rounded-md md:rounded-none text-sm"
               onClick={() => setIsMenuOpen(false)}
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700 block md:inline-block w-full md:w-auto mt-2 md:mt-0"
+              className="bg-blue-600 hover:bg-blue-700 transition-colors block md:inline-block px-4 py-3 md:py-2 md:px-4 rounded-md font-medium text-sm"
               onClick={() => setIsMenuOpen(false)}
             >
               Register
@@ -57,7 +56,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-gray-800 text-white shadow-lg sticky top-0 z-50">
-      <div className="container px-4 py-3 flex justify-between items-center">
+      <div className="px-4 md:px-6 py-3 flex justify-between">
         <Link to="/" className="text-2xl font-extrabold hover:text-gray-300">
           Storynix
         </Link>
