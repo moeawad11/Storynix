@@ -26,3 +26,41 @@ export interface Order {
     price: number;
   }[];
 }
+
+export interface Book {
+  id: number;
+  title: string;
+  author: string;
+  isbn: string;
+  description: string;
+  price: number;
+  stockQuantity: number;
+  images: string[];
+  createdAt: Date;
+  updateAt: Date;
+}
+
+export interface PaginationMeta {
+  totalItems: number;
+  currentPage: number;
+  itemsPerPage: number;
+  totalPages: number;
+}
+
+export interface PaginatedBooksResponse {
+  data: Book[];
+  meta: PaginationMeta;
+}
+
+export interface SingleBookResponse {
+  data: Book;
+}
+
+export interface AddToCartRequest {
+  bookId: number;
+  quantity: number;
+}
+
+export interface AddToCartResponse {
+  message: string;
+}
