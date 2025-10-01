@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Book } from "../types/index.js";
 
@@ -7,11 +7,15 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ book }) => {
-  const imageUrl =
-    book.images?.[0] ||
-    "https://placehold.co/300x450/e5e7eb/6b7280?text=No+Cover";
-
-  const isAvailable = book.stockQuantity > 0;
+  const { imageUrl, isAvailable, formattedPrice } = useMemo(() => {
+    return {
+      imageUrl:
+        book.images?.[0] ||
+        "https://placehold.co/300x450/e5e7eb/6b7280?text=No+Cover",
+      isAvailable: book.stockQuantity > 0,
+      formattedPrice: Number(book.price).toFixed(2),
+    };
+  }, [book]);
 
   return (
     <Link
@@ -50,7 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ book }) => {
 
         <div className="mt-3 flex justify-between items-center gap-3 md:gap-4">
           <span className="text-sm sm:text-base font-extrabold text-green-600">
-            ${Number(book.price).toFixed(2)}
+            ${formattedPrice}
           </span>
           <span className="text-xs text-gray-400">
             {book.stockQuantity > 0

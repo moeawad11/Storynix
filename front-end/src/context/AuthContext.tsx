@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   ReactNode,
+  useMemo,
 } from "react";
 import { User, AuthContextType } from "../types/index.js";
 import api from "../api/axios.js";
@@ -49,6 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Token validation failed, logging out.", err);
       localStorage.removeItem("token");
       setToken(null);
+      delete api.defaults.headers.common["Authorization"];
     } finally {
       setIsLoading(false);
     }
@@ -68,13 +70,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     delete api.defaults.headers.common["Authorization"];
   };
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    token,
-    login,
-    logout,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      token,
+      login,
+      logout,
+    }),
+    [user, token]
+  );
 
   if (isLoading)
     return (

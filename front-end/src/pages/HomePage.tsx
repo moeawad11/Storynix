@@ -66,7 +66,9 @@ const HomePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchBooks(debouncedSearchTerm, pagination.currentPage);
+    if (pagination.currentPage) {
+      fetchBooks(debouncedSearchTerm, pagination.currentPage);
+    }
   }, [debouncedSearchTerm, pagination.currentPage, fetchBooks]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

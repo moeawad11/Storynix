@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { Book, SingleBookResponse } from "../types/index.js";
@@ -14,12 +14,20 @@ const BookDetailsPage: React.FC = () => {
   const [cartMessage, setCartMessage] = useState<string | null>(null);
 
   const bookId = parseInt(id || "", 10);
-  const imageUrl =
-    book?.images?.[0] ||
-    "https://placehold.co/400x600/e5e7eb/6b7280?text=No+Cover";
-  const isAvailable = (book?.stockQuantity || 0) > 0;
+
+  const { imageUrl, isAvailable, formattedPrice } = useMemo(() => {
+    const defaultUrl =
+      "https://placehold.co/400x600/e5e7eb/6b7280?text=No+Cover";
+    return {
+      imageUrl: book?.images?.[0] || defaultUrl,
+      isAvailable: (book?.stockQuantity || 0) > 0,
+      formattedPrice: Number(book?.price).toFixed(2),
+    };
+  }, [book]);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (isNaN(bookId) || bookId <= 0) {
       setError("Invalid book ID provided.");
       setLoading(false);
@@ -34,17 +42,27 @@ const BookDetailsPage: React.FC = () => {
         const response = await api.get(`/books/${bookId}`);
         const { data } = response.data as SingleBookResponse;
 
-        setBook(data);
-        setQuantity(Math.min(1, data.stockQuantity));
+        if (isMounted) {
+          setBook(data);
+          setQuantity(Math.min(1, data.stockQuantity));
+        }
       } catch (err: any) {
-        console.error("Fetch Book Details Error:", err);
-        setError(err.response?.data?.message || "Failed to load book details.");
+        if (isMounted) {
+          console.error("Fetch Book Details Error:", err);
+          setError(
+            err.response?.data?.message || "Failed to load book details."
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchBook();
+
+    return () => {
+      isMounted = false;
+    };
   }, [bookId]);
 
   const handleAddToCart = async () => {
@@ -52,6 +70,7 @@ const BookDetailsPage: React.FC = () => {
 
     setCartMessage("Adding to cart...");
 
+    let timerId: number | null = null;
     try {
       await api.post("/cart/add", {
         bookId: book.id,
@@ -60,11 +79,20 @@ const BookDetailsPage: React.FC = () => {
       setCartMessage(
         `✅ Successfully added ${quantity} x ${book.title} to cart!`
       );
-      setTimeout(() => setCartMessage(null), 3000);
+
+      if (timerId) clearTimeout(timerId);
+      timerId = setTimeout(() => setCartMessage(null), 3000);
     } catch (err: any) {
       console.error("Add to Cart Error:", err);
       setCartMessage("❌ Failed to add to cart. You may need to log in.");
+
+      if (timerId) clearTimeout(timerId);
+      timerId = setTimeout(() => setCartMessage(null), 5000);
     }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
   };
 
   if (loading) {
@@ -121,7 +149,7 @@ const BookDetailsPage: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-y border-gray-200 py-5 mb-8">
             <p className="text-3xl md:text-4xl font-extrabold text-green-700">
-              ${Number(book.price).toFixed(2)}
+              ${formattedPrice}
             </p>
             <div className="flex items-center space-x-2">
               <Package className="text-gray-500" size={20} />
