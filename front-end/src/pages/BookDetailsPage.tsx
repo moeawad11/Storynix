@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { Book, SingleBookResponse } from "../types/index.js";
 import { ShoppingCart, Package } from "lucide-react";
+import { useCart } from "../context/CartContext.js";
 
 const BookDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToCart } = useCart();
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,10 +74,8 @@ const BookDetailsPage: React.FC = () => {
 
     let timerId: number | null = null;
     try {
-      await api.post("/cart/add", {
-        bookId: book.id,
-        quantity: quantity,
-      });
+      addToCart(book, quantity);
+
       setCartMessage(
         `✅ Successfully added ${quantity} x ${book.title} to cart!`
       );

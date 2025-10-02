@@ -8,6 +8,7 @@ import RegisterPage from "./pages/RegisterPage.js";
 import BookDetailsPage from "./pages/BookDetailsPage.js";
 import CartPage from "./pages/CartPage.js";
 import ProfilePage from "./pages/ProfilePage.js";
+import ShippingPage from "./pages/ShippingPage.js";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,14 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="checkout/shipping"
+          element={
+            <ProtectedRoute>
+              <ShippingPage />
             </ProtectedRoute>
           }
         />

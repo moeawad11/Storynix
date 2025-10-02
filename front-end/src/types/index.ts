@@ -14,17 +14,19 @@ export interface AuthContextType {
   logout: () => void;
 }
 
+export interface OrderItem {
+  bookId: string;
+  title: string;
+  price: number;
+  quantity: number;
+}
+
 export interface Order {
   id: string;
   totalPrice: number;
   orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
-  orderItems: {
-    bookId: string;
-    title: string;
-    quantity: number;
-    price: number;
-  }[];
+  orderItems: OrderItem[];
 }
 
 export interface Book {
@@ -36,8 +38,6 @@ export interface Book {
   price: number;
   stockQuantity: number;
   images: string[];
-  createdAt: Date;
-  updateAt: Date;
 }
 
 export interface PaginationMeta {
@@ -56,11 +56,19 @@ export interface SingleBookResponse {
   data: Book;
 }
 
-export interface AddToCartRequest {
+export interface CartItem {
   bookId: number;
+  title: string;
+  price: number;
   quantity: number;
 }
 
-export interface AddToCartResponse {
-  message: string;
+export interface CartContextType {
+  cart: CartItem[];
+  totalItems: number;
+  totalPrice: number;
+  addToCart: (book: Book, quantity: number) => void;
+  removeFromCart: (bookId: number) => void;
+  updateQuantity: (bookId: number, newQuantity: number) => void;
+  clearCart: () => void;
 }

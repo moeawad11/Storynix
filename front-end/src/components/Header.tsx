@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.js";
+import { useCart } from "../context/CartContext.js";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
-  const cartItemCount = 0;
+  const { totalItems: cartItemCount } = useCart();
+
   const userName = user?.firstName?.split(" ")[0] || "Profile";
   const handleLogout = () => {
     logout();
@@ -64,7 +66,7 @@ const Header: React.FC = () => {
         <div className="hidden md:flex space-x-6 items-center">
           <Link to="/cart" className="relative hover:text-gray-300 text-xl">
             🛒
-            {cartItemCount > 0 && (
+            {cartItemCount >= 0 && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
                 {cartItemCount}
               </span>
@@ -76,7 +78,7 @@ const Header: React.FC = () => {
         <div className="md:hidden flex items-center space-x-4">
           <Link to="/cart" className="relative hover:text-gray-300 text-xl">
             🛒
-            {cartItemCount > 0 && (
+            {cartItemCount >= 0 && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
                 {cartItemCount}
               </span>
