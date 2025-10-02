@@ -25,7 +25,6 @@ const ProfilePage: React.FC = () => {
 
         const ordersResponse = await api.get("/orders/myorders");
         setOrders(ordersResponse.data.orders);
-        console.log(ordersResponse.data.orders);
       } catch (err: any) {
         console.error("Profile/Orders Fetch Error:", err);
         setError(

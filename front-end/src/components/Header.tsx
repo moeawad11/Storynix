@@ -22,14 +22,33 @@ const Header: React.FC = () => {
           <>
             <Link
               to="/profile"
-              className="hover:text-blue-200 block md:inline-block"
+              className="md:hidden hover:text-blue-300 hover:bg-gray-700 transition-colors block px-4 py-3 rounded-md text-base sm:text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
-              Hi, {userName}
+              Profile
             </Link>
+
+            <Link
+              to="/profile"
+              className="relative hidden md:flex items-center text-2xl group hover:text-blue-200 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              👤
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                Profile
+              </span>
+            </Link>
+
             <button
               onClick={handleLogout}
-              className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 block md:inline-block w-full md:w-auto mt-2 md:mt-0"
+              className="md:hidden text-left bg-red-600 hover:bg-red-700 transition-colors text-white px-4 py-3 rounded-md text-base sm:text-lg"
+            >
+              Logout
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="hidden md:inline-block bg-red-600 hover:bg-red-700 transition-colors text-white px-4 py-2 rounded-md text-base sm:text-lg"
             >
               Logout
             </button>
@@ -38,14 +57,14 @@ const Header: React.FC = () => {
           <>
             <Link
               to="/login"
-              className="hover:text-blue-300 hover:bg-gray-700 transition-colors block md:inline-block px-4 py-3 md:py-0 md:px-0 rounded-md md:rounded-none text-sm"
+              className="hover:text-blue-300 hover:bg-gray-700 transition-colors block md:inline-block px-4 py-3 md:py-0 md:px-0 rounded-md md:rounded-none text-base sm:text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="bg-blue-600 hover:bg-blue-700 transition-colors block md:inline-block px-4 py-3 md:py-2 md:px-4 rounded-md font-medium text-sm"
+              className="bg-blue-600 hover:bg-blue-700 transition-colors block md:inline-block px-4 py-3 md:py-2 md:px-4 rounded-md font-medium text-base sm:text-lg"
               onClick={() => setIsMenuOpen(false)}
             >
               Register
@@ -57,14 +76,20 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white shadow-lg sticky top-0 z-50">
-      <div className="px-4 md:px-6 py-3 flex justify-between">
-        <Link to="/" className="text-2xl font-extrabold hover:text-gray-300">
+    <header className="bg-gray-800 text-white shadow-lg sticky top-0 z-50 p-4">
+      <div className="px-4 md:px-8 py-3 flex justify-between">
+        <Link
+          to="/"
+          className="text-3xl sm:text-4xl font-extrabold hover:text-gray-300"
+        >
           Storynix
         </Link>
 
-        <div className="hidden md:flex space-x-6 items-center">
-          <Link to="/cart" className="relative hover:text-gray-300 text-xl">
+        <div className="hidden md:flex space-x-6 items-center gap-x-1">
+          <Link
+            to="/cart"
+            className="relative hover:text-gray-300 text-xl sm:text-2xl"
+          >
             🛒
             {cartItemCount >= 0 && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
@@ -76,7 +101,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="md:hidden flex items-center space-x-4">
-          <Link to="/cart" className="relative hover:text-gray-300 text-xl">
+          <Link to="/cart" className="relative hover:text-gray-300 text-2xl">
             🛒
             {cartItemCount >= 0 && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
@@ -87,7 +112,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-xl p-2 hover:bg-gray-700 rounded"
+            className="text-xl sm:text-2xl p-2 hover:bg-gray-700 rounded"
           >
             {isMenuOpen ? "✕" : "☰"}
           </button>

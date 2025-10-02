@@ -7,13 +7,14 @@ import { useCart } from "../context/CartContext.js";
 
 const BookDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
 
   const bookId = parseInt(id || "", 10);
 
@@ -70,24 +71,44 @@ const BookDetailsPage: React.FC = () => {
   const handleAddToCart = async () => {
     if (!book || quantity <= 0) return;
 
+    setIsAdding(true);
     setCartMessage("Adding to cart...");
-
     let timerId: number | null = null;
     try {
-      addToCart(book, quantity);
+      const existingItem = cart.find((item) => item.bookId === book.id);
 
-      setCartMessage(
-        `✅ Successfully added ${quantity} x ${book.title} to cart!`
-      );
+      if (existingItem && existingItem.quantity >= book.stockQuantity) {
+        setCartMessage(
+          `⚠️ You already have the maximum stock of "${book.title}" in your cart.`
+        );
+      } else if (
+        existingItem &&
+        existingItem.quantity + quantity > book.stockQuantity
+      ) {
+        setCartMessage(
+          `⚠️ Cannot add ${quantity} more. Only ${
+            book.stockQuantity - existingItem.quantity
+          } left in stock.`
+        );
+      } else {
+        addToCart(book, quantity);
+        setCartMessage(
+          `✅ Successfully added ${quantity} x ${book.title} to cart!`
+        );
+      }
 
-      if (timerId) clearTimeout(timerId);
-      timerId = setTimeout(() => setCartMessage(null), 3000);
+      timerId = setTimeout(() => {
+        setCartMessage(null);
+        setIsAdding(false);
+      }, 3000);
     } catch (err: any) {
       console.error("Add to Cart Error:", err);
       setCartMessage("❌ Failed to add to cart. You may need to log in.");
 
-      if (timerId) clearTimeout(timerId);
-      timerId = setTimeout(() => setCartMessage(null), 5000);
+      timerId = setTimeout(() => {
+        setCartMessage(null);
+        setIsAdding(false);
+      }, 5000);
     }
 
     return () => {
@@ -203,9 +224,12 @@ const BookDetailsPage: React.FC = () => {
               <input
                 type="number"
                 value={quantity}
-                min="1"
+                min={1}
                 max={book.stockQuantity}
-                readOnly
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= 1 && val <= book.stockQuantity) setQuantity(val);
+                }}
                 className="w-16 text-center font-medium border-x border-gray-300 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <button
@@ -221,11 +245,11 @@ const BookDetailsPage: React.FC = () => {
 
             <button
               onClick={handleAddToCart}
-              disabled={!isAvailable}
+              disabled={!isAvailable || isAdding}
               className={`flex-grow py-3 px-6 text-lg font-bold rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 ${
-                isAvailable
-                  ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-95"
-                  : "bg-gray-300 text-gray-700 cursor-not-allowed"
+                !isAvailable || isAdding
+                  ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700 active:scale-95"
               }`}
             >
               <ShoppingCart size={20} />

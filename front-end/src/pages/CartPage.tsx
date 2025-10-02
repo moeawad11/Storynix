@@ -11,13 +11,6 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
   const itemTotal = (price * quantity).toFixed(2);
   const stockQuantity = item.stockQuantity || 99;
 
-  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuantity = Number(event.target.value);
-    if (newQuantity >= 1 && newQuantity <= stockQuantity) {
-      updateQuantity(item.bookId, newQuantity);
-    }
-  };
-
   const handleIncrement = () => {
     if (quantity < stockQuantity) {
       updateQuantity(item.bookId, quantity + 1);
@@ -31,9 +24,10 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
   };
 
   return (
-    <div className="flex items-center border-b border-gray-200 py-4 last:border-b-0 transition duration-150 ease-in-out hover:bg-gray-50">
-      <div className="w-1/2 flex items-center space-x-4">
-        <Link to={`/details/${item.bookId}`}>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-4 border-b border-gray-200 py-4 last:border-b-0 transition duration-150 ease-in-out hover:bg-gray-50">
+      {/* Product - matches header flex-1 */}
+      <div className="flex items-center gap-3 flex-1">
+        <Link to={`/books/${item.bookId}`} className="flex-shrink-0">
           <img
             src={
               item.image ||
@@ -49,57 +43,67 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
             }}
           />
         </Link>
-        <div>
+        <div className="flex-1 min-w-0">
           <Link
-            to={`/details/${item.bookId}`}
-            className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors"
+            to={`/books/${item.bookId}`}
+            className="text-sm sm:text-base font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"
           >
             {item.title}
           </Link>
-          <p className="text-sm text-gray-500">by {item.author || "Unknown"}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            by {item.author || "Unknown"}
+          </p>
+          {/* Mobile only price */}
+          <p className="text-sm font-bold text-gray-900 mt-2 sm:hidden">
+            ${price.toFixed(2)}
+          </p>
         </div>
       </div>
 
-      <div className="w-1/6 text-center text-gray-700 font-medium hidden sm:block">
-        ${price.toFixed(2)}
+      {/* Price - matches header w-28 - HIDDEN ON MOBILE */}
+      <div className="hidden sm:flex sm:w-28 justify-center items-center">
+        <p className="text-base font-medium text-gray-700">
+          ${price.toFixed(2)}
+        </p>
       </div>
 
-      <div className="w-1/6 flex justify-center">
-        <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden max-w-[120px]">
+      {/* Quantity - matches header w-36 */}
+      <div className="flex sm:w-36 justify-center items-center">
+        <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
           <button
             onClick={handleDecrement}
             disabled={quantity <= 1}
-            className="p-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+            className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-colors font-semibold"
           >
-            -
+            −
           </button>
           <input
-            type="number"
+            type="text"
             value={quantity}
-            onChange={handleQuantityChange}
-            min="1"
-            max={stockQuantity}
             readOnly
-            className="w-10 text-center font-medium border-x border-gray-300 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-10 h-9 text-center text-sm font-medium border-x border-gray-300 focus:outline-none"
           />
           <button
             onClick={handleIncrement}
             disabled={quantity >= stockQuantity}
-            className="p-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+            className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-colors font-semibold"
           >
             +
           </button>
         </div>
       </div>
 
-      <div className="w-1/6 flex flex-col sm:flex-row items-center justify-end space-x-4">
-        <span className="text-lg font-bold text-gray-900">${itemTotal}</span>
+      {/* Subtotal - matches header w-28 */}
+      <div className="flex sm:w-28 items-center justify-end gap-2">
+        <span className="text-sm sm:text-base font-bold text-gray-900">
+          ${itemTotal}
+        </span>
         <button
           onClick={() => removeFromCart(item.bookId)}
           className="p-2 text-red-600 hover:text-red-700 transition-colors rounded-full hover:bg-red-100 active:scale-95"
           title="Remove item"
         >
-          <Trash2 size={20} />
+          <Trash2 size={18} />
         </button>
       </div>
     </div>
@@ -133,18 +137,18 @@ const CartPage: React.FC = () => {
   const total = totalPrice * (1 + tax);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 min-h-[80vh]">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-blue-600 inline-block pb-1">
+    <div className="max-w-6xl container px-4 sm:px-6 py-10 min-h-[80vh]">
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-blue-600 inline-block pb-2">
         Shopping Cart ({cart.length} {cart.length === 1 ? "Item" : "Items"})
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-xl divide-y divide-gray-100">
-          <div className="flex text-sm font-bold text-gray-500 border-b border-gray-200 pb-2 mb-2">
-            <span className="w-1/2">Product</span>
-            <span className="w-1/6 text-center hidden sm:block">Price</span>
-            <span className="w-1/6 text-center">Quantity</span>
-            <span className="w-1/6 text-right pr-4">Subtotal</span>
+          <div className="hidden sm:flex text-sm font-bold text-gray-500 border-b border-gray-200 pb-2 mb-2">
+            <span className="flex-1">Product</span>
+            <span className="w-36 text-center">Price</span>
+            <span className="w-40 text-center">Quantity</span>
+            <span className="w-28 text-right pr-4">Subtotal</span>
           </div>
 
           {cart.map((item) => (

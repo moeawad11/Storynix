@@ -46,7 +46,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-
   useEffect(() => {
     setCart(getLocalCart());
     setIsLoaded(true);
