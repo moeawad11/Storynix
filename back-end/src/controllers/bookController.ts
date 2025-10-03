@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.js";
 import { AppDataSource } from "../config/database.js";
 import { Book } from "../entity/Book.js";
-import { FindManyOptions, Like } from "typeorm";
+import { FindManyOptions, ILike } from "typeorm";
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 25;
@@ -26,7 +26,7 @@ export const getBooks = async (req: Request, res: Response) => {
 
     if (author && typeof author == "string") where.author = author;
 
-    if (search && typeof search == "string") where.title = Like(`%${search}%`);
+    if (search && typeof search == "string") where.title = ILike(`%${search}%`);
 
     const [books, total] = await bookRepo.findAndCount({
       where,
@@ -172,11 +172,9 @@ export const updateBook = async (req: AuthRequest, res: Response) => {
     });
   } catch (err) {
     console.error("Error updating book:", err);
-    res
-      .status(500)
-      .json({
-        message: `Server error while attempting to update book with id=${id}.`,
-      });
+    res.status(500).json({
+      message: `Server error while attempting to update book with id=${id}.`,
+    });
   }
 };
 
@@ -197,10 +195,8 @@ export const deleteBook = async (req: AuthRequest, res: Response) => {
     res.status(204).send();
   } catch (err) {
     console.error("Error deleting book:", err);
-    res
-      .status(500)
-      .json({
-        message: `Server error while attempting to delete book with id=${id}.`,
-      });
+    res.status(500).json({
+      message: `Server error while attempting to delete book with id=${id}.`,
+    });
   }
 };

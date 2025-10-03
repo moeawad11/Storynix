@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cors from "cors";
+import cartRoutes from "./routes/cartRoutes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", bookRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", cartRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

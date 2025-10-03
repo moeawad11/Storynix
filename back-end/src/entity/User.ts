@@ -1,14 +1,25 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, Relation, BeforeInsert, BeforeUpdate} from "typeorm";
-import {Order} from "./Order.js";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Relation,
+  BeforeInsert,
+  BeforeUpdate,
+} from "typeorm";
+import { Order } from "./Order.js";
 import bcrypt from "bcrypt";
+import { Cart } from "./Cart.js";
 
 @Entity()
-export class User{
+export class User {
   @PrimaryGeneratedColumn()
-  id!:number;
+  id!: number;
 
-  @Column({unique: true})
-  email!:string;
+  @Column({ unique: true })
+  email!: string;
 
   @Column()
   firstName!: string;
@@ -19,11 +30,14 @@ export class User{
   @Column()
   password!: string;
 
-  @Column({default: "user"})
+  @Column({ default: "user" })
   role!: string;
 
-  @OneToMany(()=> Order, (order)=> order.user)
+  @OneToMany(() => Order, (order) => order.user)
   orders!: Relation<Order>[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts!: Relation<Cart>[];
 
   @CreateDateColumn()
   createdAt!: Date;
@@ -33,8 +47,8 @@ export class User{
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword(): Promise<void>{
-    if(!this.password.startsWith("$2b$"))
+  async hashPassword(): Promise<void> {
+    if (!this.password.startsWith("$2b$"))
       this.password = await bcrypt.hash(this.password, 12);
   }
 
