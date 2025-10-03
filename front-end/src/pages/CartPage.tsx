@@ -9,7 +9,14 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
   const price = Number(item.price);
   const quantity = item.quantity;
   const itemTotal = (price * quantity).toFixed(2);
-  const stockQuantity = item.stockQuantity || 99;
+  const stockQuantity = item.stockQuantity || 0;
+
+  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuantity = Number(event.target.value);
+    if (newQuantity >= 1 && newQuantity <= stockQuantity) {
+      updateQuantity(item.bookId, newQuantity);
+    }
+  };
 
   const handleIncrement = () => {
     if (quantity < stockQuantity) {
@@ -25,7 +32,6 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 border-b border-gray-200 py-4 last:border-b-0 transition duration-150 ease-in-out hover:bg-gray-50">
-      {/* Product - matches header flex-1 */}
       <div className="flex items-center gap-3 flex-1">
         <Link to={`/books/${item.bookId}`} className="flex-shrink-0">
           <img
@@ -53,21 +59,18 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
           <p className="text-xs text-gray-500 mt-1">
             by {item.author || "Unknown"}
           </p>
-          {/* Mobile only price */}
           <p className="text-sm font-bold text-gray-900 mt-2 sm:hidden">
             ${price.toFixed(2)}
           </p>
         </div>
       </div>
 
-      {/* Price - matches header w-28 - HIDDEN ON MOBILE */}
       <div className="hidden sm:flex sm:w-28 justify-center items-center">
         <p className="text-base font-medium text-gray-700">
           ${price.toFixed(2)}
         </p>
       </div>
 
-      {/* Quantity - matches header w-36 */}
       <div className="flex sm:w-36 justify-center items-center">
         <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
           <button
@@ -80,7 +83,9 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
           <input
             type="text"
             value={quantity}
-            readOnly
+            min={1}
+            max={quantity}
+            onChange={handleQuantityChange}
             className="w-10 h-9 text-center text-sm font-medium border-x border-gray-300 focus:outline-none"
           />
           <button
@@ -93,7 +98,6 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
         </div>
       </div>
 
-      {/* Subtotal - matches header w-28 */}
       <div className="flex sm:w-28 items-center justify-end gap-2">
         <span className="text-sm sm:text-base font-bold text-gray-900">
           ${itemTotal}
@@ -112,7 +116,7 @@ const CartItemRow: React.FC<{ item: any }> = ({ item }) => {
 
 const CartPage: React.FC = () => {
   const { cart, totalPrice } = useCart();
-
+  console.log(cart);
   if (cart.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center min-h-[80vh]">

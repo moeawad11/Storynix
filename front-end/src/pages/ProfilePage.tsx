@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.js";
 import api from "../api/axios.js";
 import { User, Order } from "../types/index.js";
+import { Link } from "react-router-dom";
 
 const ProfilePage: React.FC = () => {
   const { user: authUser } = useAuth();
@@ -80,9 +81,12 @@ const ProfilePage: React.FC = () => {
           </p>
         </div>
 
-        <button className="mt-6 bg-gray-600 text-white px-5 py-2.5 rounded-lg hover:bg-gray-700 transition shadow-md">
-          Edit Profile (Coming Soon)
-        </button>
+        <Link
+          to="/profile/edit"
+          className="mt-6 inline-block bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-md"
+        >
+          Edit Profile
+        </Link>
       </div>
 
       <div className="bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl p-8">

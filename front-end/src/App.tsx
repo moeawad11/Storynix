@@ -9,6 +9,7 @@ import BookDetailsPage from "./pages/BookDetailsPage.js";
 import CartPage from "./pages/CartPage.js";
 import ProfilePage from "./pages/ProfilePage.js";
 import ShippingPage from "./pages/ShippingPage.js";
+import EditProfilePage from "./pages/EditProfilePage.js";
 
 const App: React.FC = () => {
   return (
@@ -35,6 +36,16 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="profile/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="checkout/shipping"
           element={

@@ -4,10 +4,12 @@ import api from "../api/axios.js";
 import { Book, SingleBookResponse } from "../types/index.js";
 import { ShoppingCart, Package } from "lucide-react";
 import { useCart } from "../context/CartContext.js";
+import { useAuth } from "../context/AuthContext.js";
 
 const BookDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { cart, addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,6 +72,12 @@ const BookDetailsPage: React.FC = () => {
 
   const handleAddToCart = async () => {
     if (!book || quantity <= 0) return;
+
+    if (!isAuthenticated) {
+      setCartMessage("❌ You must log in to add items to your cart.");
+      setTimeout(() => setCartMessage(null), 4000);
+      return;
+    }
 
     setIsAdding(true);
     setCartMessage("Adding to cart...");

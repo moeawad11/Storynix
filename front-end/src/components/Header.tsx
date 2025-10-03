@@ -88,26 +88,32 @@ const Header: React.FC = () => {
         <div className="hidden md:flex space-x-6 items-center gap-x-1">
           <Link
             to="/cart"
-            className="relative hover:text-gray-300 text-xl sm:text-2xl"
+            className="relative group hover:text-gray-300 text-xl sm:text-2xl"
           >
             🛒
-            {cartItemCount >= 0 && (
+            {cartItemCount >= 0 && isAuthenticated && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
                 {cartItemCount}
               </span>
             )}
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              Cart
+            </span>
           </Link>
           <NavLinks />
         </div>
 
-        <div className="md:hidden flex items-center space-x-4">
+        <div className="group md:hidden flex items-center space-x-4">
           <Link to="/cart" className="relative hover:text-gray-300 text-2xl">
             🛒
-            {cartItemCount >= 0 && (
+            {cartItemCount >= 0 && isAuthenticated && (
               <span className="absolute -top-3 -right-3 bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-gray-800">
                 {cartItemCount}
               </span>
             )}
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              Cart
+            </span>
           </Link>
 
           <button
