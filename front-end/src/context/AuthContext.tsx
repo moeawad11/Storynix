@@ -15,6 +15,7 @@ const initialState: AuthContextType = {
   token: null,
   login: () => {},
   logout: () => {},
+  isLoggingOut: false,
 };
 
 export const AuthContext = createContext<AuthContextType>(initialState);
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoggingOut, setLogginOut] = useState<boolean>(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -68,6 +70,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setToken(null);
     setUser(null);
     delete api.defaults.headers.common["Authorization"];
+    setLogginOut(true);
+
+    setTimeout(() => {
+      setLogginOut(false);
+    }, 50);
   };
 
   const value = useMemo(
@@ -77,8 +84,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       token,
       login,
       logout,
+      isLoggingOut,
     }),
-    [user, token]
+    [user, token, isLoggingOut]
   );
 
   if (isLoading)

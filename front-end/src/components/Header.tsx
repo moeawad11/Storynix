@@ -5,11 +5,10 @@ import { useCart } from "../context/CartContext.js";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   const { totalItems: cartItemCount } = useCart();
 
-  const userName = user?.firstName?.split(" ")[0] || "Profile";
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
