@@ -10,6 +10,8 @@ import CartPage from "./pages/CartPage.js";
 import ProfilePage from "./pages/ProfilePage.js";
 import ShippingPage from "./pages/ShippingPage.js";
 import EditProfilePage from "./pages/EditProfilePage.js";
+import PaymentPage from "./pages/PaymentPage.js";
+import OrderSuccessPage from "./pages/OrderSuccessPage.js";
 
 const App: React.FC = () => {
   return (
@@ -51,6 +53,24 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <ShippingPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="checkout/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="orders/:id/success"
+          element={
+            <ProtectedRoute>
+              <OrderSuccessPage />
             </ProtectedRoute>
           }
         />

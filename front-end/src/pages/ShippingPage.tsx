@@ -1,35 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Package, ArrowLeft, ArrowRight } from "lucide-react";
-
-interface ShippingFormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}
+import { useCart } from "../context/CartContext.js";
+import { getShippingAddress, saveShippingAddress } from "../utils/storage.js";
+import { ShippingFormData } from "../types/index.js";
 
 const ShippingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { cart } = useCart();
+
+  useEffect(() => {
+    if (cart.length === 0) navigate("/cart");
+  }, [cart, navigate]);
 
   const [formData, setFormData] = useState<ShippingFormData>(() => {
-    const savedData = sessionStorage.getItem("shippingAddress");
-    return savedData
-      ? JSON.parse(savedData)
-      : {
-          fullName: "",
-          email: "",
-          phone: "",
-          address: "",
-          city: "",
-          state: "",
-          zipCode: "",
-          country: "",
-        };
+    const savedData = getShippingAddress();
+    return (
+      savedData || {
+        fullName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+      }
+    );
   });
 
   const [errors, setErrors] = useState<Partial<ShippingFormData>>({});
@@ -66,7 +63,7 @@ const ShippingPage: React.FC = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      sessionStorage.setItem("shippingAddress", JSON.stringify(formData));
+      saveShippingAddress(formData);
       navigate("/checkout/payment");
     }
   };

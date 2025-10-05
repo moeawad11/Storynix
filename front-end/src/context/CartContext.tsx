@@ -113,8 +113,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     []
   );
 
-  const clearCart = useCallback(() => {
-    setCart([]);
+  const clearCart = useCallback(async () => {
+    try {
+      await api.delete("/cart/clear");
+      setCart([]);
+    } catch (err) {
+      console.error("Error clearing cart:", err);
+      throw err;
+    }
   }, []);
 
   const { totalItems, totalPrice } = useMemo(() => {

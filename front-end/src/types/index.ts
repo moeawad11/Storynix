@@ -16,7 +16,7 @@ export interface AuthContextType {
 }
 
 export interface OrderItem {
-  bookId: string;
+  bookId: number;
   title: string;
   price: number;
   quantity: number;
@@ -73,4 +73,15 @@ export interface CartContextType {
   removeFromCart: (bookId: number) => void;
   updateQuantity: (bookId: number, newQuantity: number) => void;
   clearCart: () => void;
+}
+
+export interface ShippingFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 }
