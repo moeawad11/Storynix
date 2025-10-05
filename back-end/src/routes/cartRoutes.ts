@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../middleware/auth.js";
 import {
   addToCart,
+  clearCart,
   getCart,
   removeFromCart,
   updateCartItem,
@@ -13,6 +14,7 @@ router.use(authenticate);
 
 router.post("/cart/add", addToCart);
 router.get("/cart", getCart);
+router.delete("/cart/clear", clearCart);
 router.delete("/cart/:bookId", removeFromCart);
 router.put("/cart/update", updateCartItem);
 

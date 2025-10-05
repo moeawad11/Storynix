@@ -139,3 +139,18 @@ export const updateCartItem = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Error updating cart" });
   }
 };
+
+export const clearCart = async (req: AuthRequest, res: Response) => {
+  try {
+    const cartRepo = AppDataSource.getRepository(Cart);
+
+    await cartRepo.delete({
+      user: { id: req.user!.userId },
+    });
+
+    res.status(200).json({ message: "Cart cleared successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error clearing cart" });
+  }
+};

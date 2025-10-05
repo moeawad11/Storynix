@@ -13,6 +13,6 @@ router.use(authenticate);
 router.post("/orders", createOrder);
 router.get("/orders/myorders", getMyOrders);
 router.get("/orders/:id", getOrderById);
-router.post("/orders/:id/pay", processPaymentIntent);
+router.post("/orders/:id/payment", processPaymentIntent);
 
 export default router;
