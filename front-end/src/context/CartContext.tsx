@@ -65,7 +65,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
           bookId: book.id,
           quantity: quantityToAdd,
         });
-        console.log(res.data);
         const newItem = res.data.cartItem;
         setCart((prev) => {
           const existingItem = prev.find(

@@ -56,7 +56,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-gray-800 border-b-4 border-blue-100 pb-2">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-gray-800 border-b-4 border-blue-200 pb-2">
         <span className="text-blue-600">👤</span> User Profile
       </h1>
 

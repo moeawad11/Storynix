@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { Book, SingleBookResponse } from "../types/index.js";
 import { ShoppingCart, Package } from "lucide-react";
@@ -10,6 +10,7 @@ const BookDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { cart, addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,6 +125,36 @@ const BookDetailsPage: React.FC = () => {
     };
   };
 
+  const handleBuyNow = () => {
+    if (!book || quantity <= 0) return;
+
+    if (!isAuthenticated) {
+      setCartMessage("❌ You must log in to purchase.");
+      setTimeout(() => setCartMessage(null), 4000);
+      return;
+    }
+
+    if (book.stockQuantity < quantity) {
+      setCartMessage(`⚠️ Only ${book.stockQuantity} available in stock`);
+      setTimeout(() => setCartMessage(null), 3000);
+      return;
+    }
+
+    navigate("/checkout/shipping", {
+      state: {
+        buyNowItem: {
+          bookId: book.id,
+          title: book.title,
+          price: book.price,
+          quantity,
+          author: book.author,
+          image: book.images?.[0],
+          stockQuantity: book.stockQuantity,
+        },
+      },
+    });
+  };
+
   if (loading) {
     return (
       <div className="text-center py-20 text-xl text-gray-600">
@@ -220,7 +251,7 @@ const BookDetailsPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 mb-2">
             <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden w-auto max-w-fit max-h-fit">
               <button
                 onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
@@ -264,6 +295,18 @@ const BookDetailsPage: React.FC = () => {
               <span>{isAvailable ? "Add to Cart" : "Sold Out"}</span>
             </button>
           </div>
+
+          <button
+            disabled={!isAvailable}
+            onClick={handleBuyNow}
+            className={`flex-1 py-3 px-6 text-lg font-bold rounded-lg shadow-md transition-all flex items-center justify-center space-x-2 ${
+              !isAvailable
+                ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
+            }`}
+          >
+            Buy Now
+          </button>
 
           {cartMessage && (
             <div className="mt-6 p-4 rounded-lg text-center font-medium bg-blue-100 text-blue-700 transition duration-300">

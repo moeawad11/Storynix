@@ -17,6 +17,7 @@ const OrderSuccessPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { clearCart } = useCart();
   const order = location.state?.order;
+  const isBuyNow = location.state?.isBuyNow;
 
   useEffect(() => {
     if (!order) {
@@ -24,7 +25,8 @@ const OrderSuccessPage: React.FC = () => {
       return;
     }
 
-    clearCart();
+    if (!isBuyNow) clearCart();
+
     clearShippingAddress();
   }, [clearCart, order, navigate]);
 

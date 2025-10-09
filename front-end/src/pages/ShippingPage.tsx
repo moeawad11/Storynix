@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Package, ArrowLeft, ArrowRight } from "lucide-react";
 import { useCart } from "../context/CartContext.js";
 import { getShippingAddress, saveShippingAddress } from "../utils/storage.js";
@@ -8,10 +8,21 @@ import { ShippingFormData } from "../types/index.js";
 const ShippingPage: React.FC = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
+  const location = useLocation();
+
+  const buyNowItem = location.state?.buyNowItem || null;
+  const isBuyNow = !!buyNowItem;
 
   useEffect(() => {
-    if (cart.length === 0) navigate("/cart");
-  }, [cart, navigate]);
+    if (isBuyNow && !buyNowItem) {
+      navigate("/");
+    }
+
+    if (!isBuyNow && cart.length === 0) {
+      navigate("/cart");
+      return;
+    }
+  }, [cart, navigate, buyNowItem, isBuyNow]);
 
   const [formData, setFormData] = useState<ShippingFormData>(() => {
     const savedData = getShippingAddress();
@@ -64,7 +75,9 @@ const ShippingPage: React.FC = () => {
 
     if (validateForm()) {
       saveShippingAddress(formData);
-      navigate("/checkout/payment");
+      navigate("/checkout/payment", {
+        state: buyNowItem ? { buyNowItem } : undefined,
+      });
     }
   };
 

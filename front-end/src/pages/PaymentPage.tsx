@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useReducer, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect, useReducer, useRef, useMemo } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { CreditCard, Lock, ArrowLeft, AlertCircle } from "lucide-react";
 import { useCart } from "../context/CartContext.js";
 import { useAuth } from "../context/AuthContext.js";
@@ -26,8 +26,25 @@ interface CardDetails {
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
-  const { cart, totalPrice } = useCart();
+  const { cart: cartFromContext, totalPrice: totalPriceFromContext } =
+    useCart();
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  const buyNowItem = location.state?.buyNowItem || null;
+  const isBuyNow = !!buyNowItem;
+
+  const cart = useMemo(() => {
+    if (isBuyNow && buyNowItem) {
+      return [buyNowItem];
+    }
+    return cartFromContext;
+  }, [isBuyNow, buyNowItem, cartFromContext]);
+
+  const totalPrice =
+    isBuyNow && buyNowItem
+      ? buyNowItem.price * buyNowItem.quantity
+      : totalPriceFromContext;
 
   const [shippingAddress, setShippingAddress] =
     useState<ShippingAddress | null>(null);
@@ -52,7 +69,12 @@ const PaymentPage: React.FC = () => {
       return;
     }
 
-    if (cart.length === 0) {
+    if (isBuyNow && !buyNowItem) {
+      navigate("/");
+      return;
+    }
+
+    if (!isBuyNow && cart.length === 0) {
       navigate("/cart");
       return;
     }
@@ -64,7 +86,7 @@ const PaymentPage: React.FC = () => {
     }
 
     setShippingAddress(savedAddress);
-  }, [isAuthenticated, cart, navigate]);
+  }, [isAuthenticated, cart, navigate, buyNowItem, isBuyNow]);
 
   useEffect(() => {
     const initializeOrder = async () => {
@@ -181,7 +203,7 @@ const PaymentPage: React.FC = () => {
       console.log("Payment processed:", response.data);
 
       navigate(`/orders/${orderId}/success`, {
-        state: { order: response.data.order },
+        state: { order: response.data.order, isBuyNow },
       });
     } catch (err: any) {
       console.error("Payment error:", err);

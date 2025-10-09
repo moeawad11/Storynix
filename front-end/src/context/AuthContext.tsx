@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoggingOut, setLogginOut] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = sessionStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     } else {
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUser(response.data.user as User);
     } catch (err) {
       console.error("Token validation failed, logging out.", err);
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       setToken(null);
       delete api.defaults.headers.common["Authorization"];
     } finally {
@@ -59,14 +59,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const login = (jwtToken: string, userData: User) => {
-    localStorage.setItem("token", jwtToken);
+    sessionStorage.setItem("token", jwtToken);
     setToken(jwtToken);
     setUser(userData);
     api.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setToken(null);
     setUser(null);
     delete api.defaults.headers.common["Authorization"];
