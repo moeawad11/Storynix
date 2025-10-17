@@ -85,7 +85,8 @@ const HomePage: React.FC = () => {
   return (
     <div className="container mx-auto p-6 min-h-[80vh]">
       <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-800 mb-6 border-b border-gray-400 pb-2">
-        <span className="text-blue-600">📚</span> Storynix Catalog
+        {" "}
+        Storynix Catalog
       </h1>
 
       <div className="mb-8 max-w-xl mx-auto relative">

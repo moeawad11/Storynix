@@ -134,8 +134,13 @@ const BookDetailsPage: React.FC = () => {
       return;
     }
 
-    if (book.stockQuantity < quantity) {
-      setCartMessage(`⚠️ Only ${book.stockQuantity} available in stock`);
+    const existingItem = cart.find((item) => item.bookId === book.id);
+    const totalRequested = quantity + (existingItem?.quantity || 0);
+
+    if (totalRequested > book.stockQuantity) {
+      setCartMessage(
+        `⚠️ Cannot buy ${quantity} now. You already have ${existingItem?.quantity} in your cart. Only ${book.stockQuantity - (existingItem?.quantity || 0)} left in stock.`
+      );
       setTimeout(() => setCartMessage(null), 3000);
       return;
     }

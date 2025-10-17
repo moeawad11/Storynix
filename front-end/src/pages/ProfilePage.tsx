@@ -57,14 +57,11 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-gray-800 border-b-4 border-blue-200 pb-2">
-        <span className="text-blue-600">👤</span> User Profile
+        User Profile
       </h1>
 
       <div className="bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl p-8 mb-10">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-blue-100">
-          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-            <span className="text-blue-600 text-xl">👤</span>
-          </div>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
             Account Details
           </h2>
@@ -91,9 +88,6 @@ const ProfilePage: React.FC = () => {
 
       <div className="bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl p-8">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-blue-100">
-          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-            <span className="text-blue-600 text-xl">📦</span>
-          </div>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
             Order History
             <span className="ml-2 text-lg font-normal text-gray-500">

@@ -103,7 +103,7 @@ const EditProfilePage: React.FC = () => {
 
       const response = await api.put("/users/profile", updateData);
 
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (token && response.data.user) {
         login(token, response.data.user);
       }

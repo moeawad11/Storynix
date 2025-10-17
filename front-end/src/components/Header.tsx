@@ -22,7 +22,11 @@ const Header: React.FC = () => {
             to="/"
             className="flex items-center gap-2 group transition-transform hover:scale-105"
           >
-            <BookOpen className="w-8 h-8 md:w-10 md:h-10 group-hover:rotate-12 transition-transform" />
+            <img
+              src="storynixIcon.png"
+              alt="Storynix Icon"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain transform transition-all duration-300 group-hover:rotate-12 drop-shadow-lg"
+            />
             <span className="text-2xl md:text-3xl font-bold tracking-tight">
               Storynix
             </span>
