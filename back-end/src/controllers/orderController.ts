@@ -204,3 +204,61 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Server error while retrying payment." });
   }
 };
+
+export const getAllOrders = async (req: AuthRequest, res: Response) => {
+  try {
+    const orderRepo = AppDataSource.getRepository(Order);
+
+    const orders = await orderRepo.find({
+      order: { createdAt: "DESC" },
+      relations: ["user"],
+    });
+
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching orders from db." });
+  }
+};
+export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
+  const orderId = parseInt(req.params.id, 10);
+
+  if (isNaN(orderId) || orderId <= 0)
+    return res.status(400).json({ message: "Invalid order ID format." });
+
+  try {
+    const { orderStatus } = req.body;
+
+    const orderRepo = AppDataSource.getRepository(Order);
+
+    const order = await orderRepo.findOne({
+      where: { id: orderId },
+      relations: ["user"],
+    });
+
+    if (!order)
+      return res
+        .status(404)
+        .json({ message: `Order with ID ${orderId} not found.` });
+
+    order.orderStatus = orderStatus;
+
+    if (orderStatus === "Delivered" && !order.isDelivered) {
+      order.isDelivered = true;
+      order.deliveredAt = new Date();
+    }
+
+    await orderRepo.save(order);
+
+    res
+      .status(200)
+      .json({ message: "Order status updated successfully", order });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: `Server error while updating order ${orderId}` });
+  }
+};

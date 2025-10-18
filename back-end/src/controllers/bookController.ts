@@ -110,7 +110,7 @@ export const createBook = async (req: AuthRequest, res: Response) => {
     await bookRepo.save(newBook);
 
     res.status(201).json({
-      message: "Book creation endpoint hit (ADMIN ACCESS GRANTED)",
+      message: "Book creation endpoint hit",
       role: req.user?.role,
       bookData: req.body,
     });
@@ -192,7 +192,10 @@ export const deleteBook = async (req: AuthRequest, res: Response) => {
 
     await bookRepo.delete(id);
 
-    res.status(204).send();
+    res.status(200).json({
+      message: `Books with ID ${id} has been deleted successfully`,
+      bookToDelete,
+    });
   } catch (err) {
     console.error("Error deleting book:", err);
     res.status(500).json({
