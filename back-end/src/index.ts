@@ -8,6 +8,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 import cors from "cors";
 import cartRoutes from "./routes/cartRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import swaggerUi from "swagger-ui-express";
+import { setupSwagger } from "./config/swagger.js";
 
 const app = express();
 
@@ -22,13 +24,14 @@ app.use(
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+setupSwagger(app);
 
-app.use("/api", authRoutes);
-app.use("/api", userRoutes);
-app.use("/api", bookRoutes);
-app.use("/api", orderRoutes);
-app.use("/api", cartRoutes);
-app.use("/api", adminRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
