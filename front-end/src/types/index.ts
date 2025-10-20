@@ -23,7 +23,7 @@ export interface OrderItem {
 }
 
 export interface Order {
-  id: string;
+  id: number;
   totalPrice: number;
   orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
@@ -84,4 +84,18 @@ export interface ShippingFormData {
   state: string;
   zipCode: string;
   country: string;
+}
+
+export interface DashboardStats {
+  totalSales: string;
+  totalOrders: number;
+  totalUsers: number;
+  totalBooks: number;
+  recentOrders: Array<{
+    id: number;
+    totalPrice: number;
+    orderStatus: string;
+    createdAt: string;
+    customerName: string;
+  }>;
 }

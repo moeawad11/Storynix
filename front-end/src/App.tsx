@@ -1,17 +1,25 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout.js";
-import ProtectedRoute from "./components/ProtectedRoute.js";
-import HomePage from "./pages/HomePage.js";
-import LoginPage from "./pages/LoginPage.js";
-import RegisterPage from "./pages/RegisterPage.js";
-import BookDetailsPage from "./pages/BookDetailsPage.js";
-import CartPage from "./pages/CartPage.js";
-import ProfilePage from "./pages/ProfilePage.js";
-import ShippingPage from "./pages/ShippingPage.js";
-import EditProfilePage from "./pages/EditProfilePage.js";
-import PaymentPage from "./pages/PaymentPage.js";
-import OrderSuccessPage from "./pages/OrderSuccessPage.js";
+import {
+  Layout,
+  ProtectedRoute,
+  ProtectedAdminRoute,
+  AdminLayout,
+  HomePage,
+  LoginPage,
+  RegisterPage,
+  BookDetailsPage,
+  CartPage,
+  ProfilePage,
+  EditProfilePage,
+  ShippingPage,
+  PaymentPage,
+  OrderSuccessPage,
+  AdminDashboardPage,
+  AdminProductsPage,
+  AdminProductFormPage,
+  AdminOrdersPage,
+} from "./imports/appImports.js";
 
 const App: React.FC = () => {
   return (
@@ -84,6 +92,20 @@ const App: React.FC = () => {
             </div>
           }
         />
+      </Route>
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedAdminRoute>
+            <AdminLayout />
+          </ProtectedAdminRoute>
+        }
+      >
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="products" element={<AdminProductsPage />} />
+        <Route path="products/new" element={<AdminProductFormPage />} />
+        <Route path="orders" element={<AdminOrdersPage />} />
       </Route>
     </Routes>
   );

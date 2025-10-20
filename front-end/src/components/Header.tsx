@@ -6,7 +6,7 @@ import { useCart } from "../context/CartContext.js";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const { totalItems: cartItemCount } = useCart();
 
   const handleLogout = () => {
@@ -57,6 +57,15 @@ const Header: React.FC = () => {
                   <User className="w-5 h-5" />
                   <span className="font-medium">Profile</span>
                 </Link>
+                {user?.role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-lg transition-all group"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <span className="font-medium">Admin</span>
+                  </Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-all font-medium shadow-lg hover:shadow-xl"
@@ -117,6 +126,15 @@ const Header: React.FC = () => {
                   <User className="w-5 h-5" />
                   <span className="font-medium">Profile</span>
                 </Link>
+                {user?.role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-lg transition-all group"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <span className="font-medium">Admin</span>
+                  </Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 bg-red-500 hover:bg-red-600 rounded-lg transition-all font-medium"

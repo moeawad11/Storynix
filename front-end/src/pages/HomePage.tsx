@@ -118,7 +118,9 @@ const HomePage: React.FC = () => {
 
       {!loading && books.length === 0 && !error && (
         <div className="text-center py-20 text-xl text-gray-500">
-          No books found matching "{searchTerm}".
+          {searchTerm
+            ? `No books found matching "${searchTerm}".`
+            : "No books available at the moment."}
         </div>
       )}
 
