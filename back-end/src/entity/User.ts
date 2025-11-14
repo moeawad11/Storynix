@@ -48,7 +48,8 @@ export class User {
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(): Promise<void> {
-    if (!this.password.startsWith("$2b$"))
+    const bcryptRegex = /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/;
+    if (!bcryptRegex.test(this.password))
       this.password = await bcrypt.hash(this.password, 12);
   }
 
