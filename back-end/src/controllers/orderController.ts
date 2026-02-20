@@ -4,16 +4,22 @@ import { AppDataSource } from "../config/database.js";
 import { Order } from "../entity/Order.js";
 import { createPaymentIntent } from "../services/paymentService.js";
 import { Book } from "../entity/Book.js";
+import {
+  calculateOrderTotal,
+  validateOrderItems,
+  validateStockAvailability,
+} from "../services/orderRules.js";
 
 export const createOrder = async (req: AuthRequest, res: Response) => {
   try {
     const { orderItems, shippingAddress, paymentMethod } = req.body;
     const userId = req.user?.userId;
 
-    if (!orderItems || orderItems.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Order must contain at least one item." });
+    let validIncomingItems;
+    try {
+      validIncomingItems = validateOrderItems(orderItems);
+    } catch (error) {
+      return res.status(400).json({ message: (error as Error).message });
     }
 
     if (!shippingAddress || !paymentMethod) {
@@ -27,24 +33,28 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     }
 
     const bookRepo = AppDataSource.getRepository(Book);
-    let calculatedTotalPrice = 0;
     let validOrderItems = [];
 
-    for (const item of orderItems) {
+    for (const item of validIncomingItems) {
       const { bookId, quantity } = item;
-
-      if (!bookId || quantity <= 0) continue;
 
       const book = await bookRepo.findOneBy({ id: bookId });
 
-      if (!book || bookId.stockQuantity < quantity) {
+      if (!book) {
         return res.status(400).json({
-          message: `Book ${bookId} is out of stock or requested quantity (${quantity}) exceeds available stock (${book?.stockQuantity || 0}).`,
+          message: `Book ${bookId} not found.`,
+        });
+      }
+
+      try {
+        validateStockAvailability(quantity, book.stockQuantity, bookId);
+      } catch (error) {
+        return res.status(400).json({
+          message: (error as Error).message,
         });
       }
 
       const actualPrice = parseFloat(book.price.toString());
-      calculatedTotalPrice += actualPrice * quantity;
 
       validOrderItems.push({
         bookId: book.id,
@@ -58,6 +68,8 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       return res
         .status(400)
         .json({ message: "No valid items found in the order." });
+
+    const calculatedTotalPrice = calculateOrderTotal(validOrderItems);
 
     const orderRepo = AppDataSource.getRepository(Order);
     const newOrder = orderRepo.create({
@@ -175,13 +187,10 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
 
       if (!book)
         throw new Error(
-          `Book ID ${item.bookId} not found during payment processing.`
+          `Book ID ${item.bookId} not found during payment processing.`,
         );
 
-      if (book.stockQuantity < item.quantity)
-        throw new Error(
-          `Insufficient stock for book ID ${item.bookId}. Stock is now ${book.stockQuantity}`
-        );
+      validateStockAvailability(item.quantity, book.stockQuantity, item.bookId);
 
       book.stockQuantity -= item.quantity;
       await bookRepo.save(book);
