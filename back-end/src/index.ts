@@ -8,17 +8,16 @@ import orderRoutes from "./routes/orderRoutes.js";
 import cors from "cors";
 import cartRoutes from "./routes/cartRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import swaggerUi from "swagger-ui-express";
 import { setupSwagger } from "./config/swagger.js";
 
-const app = express();
+export const app = express();
 
 app.use(
   cors({
     origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 const PORT = process.env.PORT || 3000;
@@ -42,8 +41,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-await initializeDB();
+const startServer = async () => {
+  await initializeDB();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+if (process.env.NODE_ENV != "test") {
+  startServer();
+}

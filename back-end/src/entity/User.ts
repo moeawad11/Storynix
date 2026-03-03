@@ -31,7 +31,7 @@ export class User {
   password!: string;
 
   @Column({ default: "user" })
-  role!: string;
+  role!: "user" | "admin";
 
   @OneToMany(() => Order, (order) => order.user)
   orders!: Relation<Order>[];
@@ -49,8 +49,10 @@ export class User {
   @BeforeUpdate()
   async hashPassword(): Promise<void> {
     const bcryptRegex = /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/;
-    if (!bcryptRegex.test(this.password))
-      this.password = await bcrypt.hash(this.password, 12);
+    if (!bcryptRegex.test(this.password)) {
+      const rounds = process.env.NODE_ENV === "test" ? 1 : 12;
+      this.password = await bcrypt.hash(this.password, rounds);
+    }
   }
 
   async comparePassword(password: string): Promise<boolean> {

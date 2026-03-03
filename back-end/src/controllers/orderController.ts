@@ -15,6 +15,10 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     const { orderItems, shippingAddress, paymentMethod } = req.body;
     const userId = req.user?.userId;
 
+    if (!userId) {
+      return res.status(401).json({ message: "User not authenticated." });
+    }
+
     let validIncomingItems;
     try {
       validIncomingItems = validateOrderItems(orderItems);
@@ -26,10 +30,6 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       return res
         .status(400)
         .json({ message: "Missing shipping address or payment method." });
-    }
-
-    if (!userId) {
-      return res.status(401).json({ message: "User not authenticated." });
     }
 
     const bookRepo = AppDataSource.getRepository(Book);
@@ -143,7 +143,9 @@ export const getOrderById = async (req: AuthRequest, res: Response) => {
     });
 
     if (!getOrder) {
-      res.status(404).json({ message: `Order of ID ${orderId} not found.` });
+      return res
+        .status(404)
+        .json({ message: `Order of ID ${orderId} not found.` });
     }
 
     res.status(200).json({ order: getOrder });
@@ -166,7 +168,6 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
 
   try {
     const orderRepo = AppDataSource.getRepository(Order);
-    const bookRepo = AppDataSource.getRepository(Book);
 
     const order = await orderRepo.findOne({
       where: {
@@ -182,25 +183,30 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
     const { order: updatedOrder, clientSecret } =
       await createPaymentIntent(order);
 
-    for (const item of updatedOrder.orderItems as any[]) {
-      const book = await bookRepo.findOneBy({ id: item.bookId });
+    await AppDataSource.transaction(async (manager) => {
+      for (const item of updatedOrder.orderItems as any[]) {
+        const book = await manager.findOneBy(Book, { id: item.bookId });
 
-      if (!book)
-        throw new Error(
-          `Book ID ${item.bookId} not found during payment processing.`,
+        if (!book)
+          throw new Error(
+            `Book ID ${item.bookId} not found during payment processing.`,
+          );
+
+        validateStockAvailability(
+          item.quantity,
+          book.stockQuantity,
+          item.bookId,
         );
 
-      validateStockAvailability(item.quantity, book.stockQuantity, item.bookId);
+        book.stockQuantity -= item.quantity;
+        await manager.save(book);
+      }
 
-      book.stockQuantity -= item.quantity;
-      await bookRepo.save(book);
-    }
-
-    updatedOrder.isPaid = true;
-    updatedOrder.paidAt = new Date();
-    updatedOrder.orderStatus = "Payment Successful (MOCK)";
-
-    await orderRepo.save(updatedOrder);
+      updatedOrder.isPaid = true;
+      updatedOrder.paidAt = new Date();
+      updatedOrder.orderStatus = "Payment Successful (MOCK)";
+      await manager.save(updatedOrder);
+    });
 
     res.status(200).json({
       message: "PaymentIntent created. Proceed to confirm payment.",
@@ -210,7 +216,7 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error while retrying payment." });
+    res.status(500).json({ message: "Server error while processing payment." });
   }
 };
 

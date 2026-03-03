@@ -3,8 +3,24 @@ import { AuthRequest } from "../middleware/auth.js";
 import { AppDataSource } from "../config/database.js";
 import { User } from "../entity/User.js";
 
-export const getProfile = (req: AuthRequest, res: Response) => {
-  res.json({ message: "Protected route", user: req.user });
+export const getProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId)
+      return res.status(401).json({ message: "User not authenticated" });
+
+    const user = await AppDataSource.getRepository(User).findOneBy({
+      id: userId,
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const { password: _, ...userData } = user;
+    res.json({ user: userData });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {

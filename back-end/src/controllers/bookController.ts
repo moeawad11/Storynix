@@ -110,9 +110,8 @@ export const createBook = async (req: AuthRequest, res: Response) => {
     await bookRepo.save(newBook);
 
     res.status(201).json({
-      message: "Book creation endpoint hit",
-      role: req.user?.role,
-      bookData: req.body,
+      message: "Book created successfully.",
+      book: newBook,
     });
   } catch (err) {
     console.error(err);
