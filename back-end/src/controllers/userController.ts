@@ -41,7 +41,11 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     }
 
     const userRepo = AppDataSource.getRepository(User);
-    const user = await userRepo.findOneBy({ id: userId });
+    const user = await userRepo
+      .createQueryBuilder("user")
+      .addSelect("user.password")
+      .where("user.id = :id", { id: userId })
+      .getOne();
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

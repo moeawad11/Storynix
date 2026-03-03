@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response) => {
         role: user.role,
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     const { password: _, ...userData } = user;
@@ -50,7 +50,11 @@ export const login = async (req: Request, res: Response) => {
     email = email.toLowerCase();
     const userRepo = AppDataSource.getRepository(User);
 
-    const user = await userRepo.findOneBy({ email });
+    const user = await userRepo
+      .createQueryBuilder("user")
+      .addSelect("user.password")
+      .where("user.email = :email", { email })
+      .getOne();
     if (!user) return res.status(401).json({ message: "User does not exist" });
 
     const isMatch = await user.comparePassword(password);
@@ -65,7 +69,7 @@ export const login = async (req: Request, res: Response) => {
         role: user.role,
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     const { password: _, ...userData } = user;

@@ -14,10 +14,16 @@ export class Book{
   @Column({unique: true})
   isbn!: string;
 
-  @Column({default: "No description yet."})
+  @Column({ default: "No description provided." })
   description!: string;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0.00})
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    default: 0.0,
+    transformer: { to: (v: number) => v, from: (v: string) => parseFloat(v) },
+  })
   price!: number;
 
   @Column({default:0})

@@ -38,14 +38,14 @@ export class Order {
   @Column({ type: "decimal", precision: 10, scale: 2 })
   totalPrice!: number;
 
-  @Column({ nullable: true })
-  paymentIntentId!: string;
+  @Column({ type: "varchar", nullable: true })
+  paymentIntentId!: string | null;
 
   @Column({ default: false })
   isPaid!: boolean;
 
-  @Column({ nullable: true })
-  paidAt!: Date;
+  @Column({ type: "timestamp", nullable: true })
+  paidAt!: Date | null;
 
   @Column({ default: "Processing" })
   orderStatus!: string;
@@ -53,8 +53,8 @@ export class Order {
   @Column({ default: false })
   isDelivered!: boolean;
 
-  @Column({ nullable: true })
-  deliveredAt!: Date;
+  @Column({ type: "timestamp", nullable: true })
+  deliveredAt!: Date | null;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -20,7 +20,7 @@ export class Cart {
   @JoinColumn({ name: "userId" })
   user!: Relation<User>;
 
-  @ManyToOne(() => Book, { eager: true })
+  @ManyToOne(() => Book)
   @JoinColumn({ name: "bookId" })
   book!: Relation<Book>;
 

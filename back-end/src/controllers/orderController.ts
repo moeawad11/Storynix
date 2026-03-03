@@ -54,7 +54,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
         });
       }
 
-      const actualPrice = parseFloat(book.price.toString());
+      const actualPrice = book.price;
 
       validOrderItems.push({
         bookId: book.id,
