@@ -48,7 +48,7 @@ export class Order {
   paidAt!: Date | null;
 
   @Column({ default: "Processing" })
-  orderStatus!: string;
+  orderStatus!: "Processing" | "Shipped" | "Delivered" | "Cancelled";
 
   @Column({ default: false })
   isDelivered!: boolean;

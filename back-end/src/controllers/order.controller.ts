@@ -204,7 +204,7 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
 
       updatedOrder.isPaid = true;
       updatedOrder.paidAt = new Date();
-      updatedOrder.orderStatus = "Payment Successful (MOCK)";
+      updatedOrder.orderStatus = "Processing";
       await manager.save(updatedOrder);
     });
 
@@ -245,6 +245,11 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
 
   try {
     const { orderStatus } = req.body;
+
+    const VALID_STATUSES = ["Processing", "Shipped", "Delivered", "Cancelled"];
+    if (!orderStatus || !VALID_STATUSES.includes(orderStatus)) {
+      return res.status(400).json({ message: "Invalid order status. Must be one of: Processing, Shipped, Delivered, Cancelled." });
+    }
 
     const orderRepo = AppDataSource.getRepository(Order);
 
