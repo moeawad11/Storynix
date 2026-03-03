@@ -14,7 +14,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response) => {
     const orders = await orderRepo.find({ where: { isPaid: true } });
     const totalSales = orders.reduce(
       (sum, order) => sum + Number(order.totalPrice),
-      0
+      0,
     );
 
     const totalOrders = await orderRepo.count();

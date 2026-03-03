@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../middleware/auth.js";
-import { getDashboardStats } from "../controllers/adminController.js";
+import { getDashboardStats } from "../controllers/admin.controller.js";
 import {
   createBook,
   deleteBook,
   updateBook,
-} from "../controllers/bookController.js";
+} from "../controllers/book.controller.js";
 import {
   getAllOrders,
   updateOrderStatus,
-} from "../controllers/orderController.js";
+} from "../controllers/order.controller.js";
 
 const router = Router();
 

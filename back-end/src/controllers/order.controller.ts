@@ -2,13 +2,13 @@ import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.js";
 import { AppDataSource } from "../config/database.js";
 import { Order } from "../entity/Order.js";
-import { createPaymentIntent } from "../services/paymentService.js";
+import { createPaymentIntent } from "../services/payment.service.js";
 import { Book } from "../entity/Book.js";
 import {
   calculateOrderTotal,
   validateOrderItems,
   validateStockAvailability,
-} from "../services/orderRules.js";
+} from "../services/order.rules.js";
 
 export const createOrder = async (req: AuthRequest, res: Response) => {
   try {

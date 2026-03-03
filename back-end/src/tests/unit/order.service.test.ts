@@ -2,7 +2,7 @@ import {
   calculateOrderTotal,
   validateOrderItems,
   validateStockAvailability,
-} from "../../services/orderRules.js";
+} from "../../services/order.rules.js";
 
 describe("order rules", () => {
   test("calculateOrderTotal returns correct total for valid items", () => {

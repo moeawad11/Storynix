@@ -4,7 +4,7 @@ import {
   getMyOrders,
   getOrderById,
   processPaymentIntent,
-} from "../controllers/orderController.js";
+} from "../controllers/order.controller.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = Router();

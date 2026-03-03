@@ -16,7 +16,7 @@ export interface AuthRequest extends Request {
 export const authenticate = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -31,7 +31,7 @@ export const authenticate = (
   try {
     const decodedToken = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as DecodedToken;
 
     req.user = decodedToken;

@@ -1,4 +1,4 @@
-import { createPaymentIntent } from "../../services/paymentService.js";
+import { createPaymentIntent } from "../../services/payment.service.js";
 
 describe("payment service", () => {
   test("createPaymentIntent sets mock paymentIntentId and returns client secret", async () => {

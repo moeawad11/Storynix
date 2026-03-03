@@ -1,13 +1,13 @@
 import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import { initializeDB } from "./config/database.js";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import bookRoutes from "./routes/bookRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import bookRoutes from "./routes/book.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 import cors from "cors";
-import cartRoutes from "./routes/cartRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
+import cartRoutes from "./routes/cart.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 import { setupSwagger } from "./config/swagger.js";
 
 export const app = express();
