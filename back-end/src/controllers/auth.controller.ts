@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../config/database.js";
+import { AppDataSource } from "../config/data-source.js";
 import { User } from "../entity/User.js";
 import jwt from "jsonwebtoken";
 

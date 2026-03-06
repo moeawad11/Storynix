@@ -5,7 +5,7 @@ import {
   getOrderById,
   processPaymentIntent,
 } from "../controllers/order.controller.js";
-import { authenticate } from "../middleware/auth.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = Router();
 

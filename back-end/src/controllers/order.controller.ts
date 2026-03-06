@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { AuthRequest } from "../middleware/auth.js";
-import { AppDataSource } from "../config/database.js";
+import { AuthRequest } from "../middleware/auth.middleware.js";
+import { AppDataSource } from "../config/data-source.js";
 import { Order } from "../entity/Order.js";
 import { createPaymentIntent } from "../services/payment.service.js";
 import { Book } from "../entity/Book.js";
@@ -248,7 +248,10 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
 
     const VALID_STATUSES = ["Processing", "Shipped", "Delivered", "Cancelled"];
     if (!orderStatus || !VALID_STATUSES.includes(orderStatus)) {
-      return res.status(400).json({ message: "Invalid order status. Must be one of: Processing, Shipped, Delivered, Cancelled." });
+      return res.status(400).json({
+        message:
+          "Invalid order status. Must be one of: Processing, Shipped, Delivered, Cancelled.",
+      });
     }
 
     const orderRepo = AppDataSource.getRepository(Order);

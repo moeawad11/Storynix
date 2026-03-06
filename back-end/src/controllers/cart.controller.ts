@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { AppDataSource } from "../config/database.js";
+import { AppDataSource } from "../config/data-source.js";
 import { Cart } from "../entity/Cart.js";
 import { Book } from "../entity/Book.js";
-import { AuthRequest } from "../middleware/auth.js";
+import { AuthRequest } from "../middleware/auth.middleware.js";
 
 export const addToCart = async (req: AuthRequest, res: Response) => {
   try {

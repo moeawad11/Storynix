@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../middleware/auth.js";
+import { authenticate, authorize } from "../middleware/auth.middleware.js";
 import { getDashboardStats } from "../controllers/admin.controller.js";
 import {
   createBook,

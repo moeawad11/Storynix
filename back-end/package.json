@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "storynix-backend",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -10,7 +10,10 @@
     "watch": "tsc -w",
     "test": "npm run test:unit",
     "test:unit": "jest --config jest.config.js --testPathPatterns=src/tests/unit",
-    "test:integration": "jest --config jest.config.js --testPathPatterns=src/tests/integration --runInBand --forceExit"
+    "test:integration": "jest --config jest.config.js --testPathPatterns=src/tests/integration --runInBand --forceExit",
+    "migration:generate": "typeorm-ts-node-esm -d src/config/data-source.ts migration:generate src/migration/Initial",
+    "migration:run": "typeorm-ts-node-esm -d src/config/data-source.ts migration:run",
+    "migration:revert": "typeorm-ts-node-esm -d src/config/data-source.ts migration:revert"
   },
   "keywords": [],
   "author": "",

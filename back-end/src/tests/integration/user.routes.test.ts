@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app } from "../../index.js";
-import { AppDataSource } from "../../config/database.js";
+import { AppDataSource } from "../../config/data-source.js";
 
 let token: string;
 const TEST_EMAIL = `user_test_${Date.now()}@storynix.test`;

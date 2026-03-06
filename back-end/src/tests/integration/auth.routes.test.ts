@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app } from "../../index.js";
-import { AppDataSource } from "../../config/database.js";
+import { AppDataSource } from "../../config/data-source.js";
 import { User } from "../../entity/User.js";
 
 const TEST_EMAIL = `auth_test_${Date.now()}@storynix.test`;

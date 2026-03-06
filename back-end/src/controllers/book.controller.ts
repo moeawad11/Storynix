@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../middleware/auth.js";
-import { AppDataSource } from "../config/database.js";
+import { AuthRequest } from "../middleware/auth.middleware.js";
+import { AppDataSource } from "../config/data-source.js";
 import { Book } from "../entity/Book.js";
 import { FindManyOptions, ILike } from "typeorm";
 

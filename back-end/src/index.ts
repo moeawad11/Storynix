@@ -5,24 +5,16 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import bookRoutes from "./routes/book.routes.js";
 import orderRoutes from "./routes/order.routes.js";
-import cors from "cors";
 import cartRoutes from "./routes/cart.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import { setupSwagger } from "./config/swagger.js";
+import securityMiddleWare from "./middleware/security.middleware.js";
 
 export const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }),
-);
-
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(securityMiddleWare);
 setupSwagger(app);
 
 app.use("/api/auth", authRoutes);
@@ -49,6 +41,6 @@ const startServer = async () => {
   });
 };
 
-if (process.env.NODE_ENV != "test") {
+if (process.env.NODE_ENV !== "test") {
   startServer();
 }

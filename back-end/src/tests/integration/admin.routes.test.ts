@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app } from "../../index.js";
-import { AppDataSource } from "../../config/database.js";
+import { AppDataSource } from "../../config/data-source.js";
 import { Book } from "../../entity/Book.js";
 
 let adminToken: string;

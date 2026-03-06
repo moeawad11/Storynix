@@ -16,7 +16,7 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.carts, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.carts)
   @JoinColumn({ name: "userId" })
   user!: Relation<User>;
 

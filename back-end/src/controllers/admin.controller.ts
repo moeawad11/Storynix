@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { AuthRequest } from "../middleware/auth.js";
-import { AppDataSource } from "../config/database.js";
+import { AuthRequest } from "../middleware/auth.middleware.js";
+import { AppDataSource } from "../config/data-source.js";
 import { Order } from "../entity/Order.js";
 import { User } from "../entity/User.js";
 import { Book } from "../entity/Book.js";

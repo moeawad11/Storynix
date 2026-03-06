@@ -1,17 +1,26 @@
-import {Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  UpdateDateColumn,
+  CreateDateColumn,
+  Index,
+} from "typeorm";
 
 @Entity()
-export class Book{
+export class Book {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Index()
   @Column()
   title!: string;
 
+  @Index()
   @Column()
   author!: string;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   isbn!: string;
 
   @Column({ default: "No description provided." })
@@ -26,10 +35,10 @@ export class Book{
   })
   price!: number;
 
-  @Column({default:0})
+  @Column({ default: 0 })
   stockQuantity!: number;
 
-  @Column("text", {array: true, default:"{}"})
+  @Column("text", { array: true, default: "{}" })
   images!: string[];
 
   @CreateDateColumn()

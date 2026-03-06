@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Relation,
+  Index,
 } from "typeorm";
 import { User } from "./User.js";
 
@@ -17,6 +18,7 @@ interface OrderItem {
   price: number;
 }
 
+@Index(["user", "createdAt"])
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
