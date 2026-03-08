@@ -60,7 +60,9 @@ describe("cart integration routes", () => {
       .send({ bookId: seededBookId })
       .expect(400);
 
-    expect(res.body.message).toBe("Book ID and quantity required");
+    expect(res.body.message).toBe(
+      "Invalid input: expected number, received undefined",
+    );
   });
 
   test("POST /cart/add returns 404 for non-existent book", async () => {
@@ -124,7 +126,9 @@ describe("cart integration routes", () => {
       .send({ bookId: seededBookId })
       .expect(400);
 
-    expect(res.body.message).toBe("Book ID and quantity required");
+    expect(res.body.message).toBe(
+      "Invalid input: expected number, received undefined",
+    );
   });
 
   test("PUT /cart/update returns 404 for item not in cart", async () => {

@@ -67,7 +67,7 @@ describe("user integration routes", () => {
       .expect(400);
 
     expect(res.body.message).toBe(
-      "First name, last name, and email are required",
+      "Invalid input: expected string, received undefined",
     );
   });
 

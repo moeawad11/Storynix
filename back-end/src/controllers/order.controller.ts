@@ -26,12 +26,6 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: (error as Error).message });
     }
 
-    if (!shippingAddress || !paymentMethod) {
-      return res
-        .status(400)
-        .json({ message: "Missing shipping address or payment method." });
-    }
-
     const bookRepo = AppDataSource.getRepository(Book);
     let validOrderItems = [];
 

@@ -1,5 +1,11 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import {
+  CreateBookSchema,
+  UpdateBookSchema,
+} from "../validators/book.validator.js";
+import { UpdateOrderStatusSchema } from "../validators/order.validator.js";
 import { getDashboardStats } from "../controllers/admin.controller.js";
 import {
   createBook,
@@ -143,7 +149,7 @@ router.get("/stats", getDashboardStats);
  *       500:
  *         description: Server error
  */
-router.post("/books", createBook);
+router.post("/books", validate(CreateBookSchema), createBook);
 
 /**
  * @openapi
@@ -182,7 +188,7 @@ router.post("/books", createBook);
  *       500:
  *         description: Server error
  */
-router.put("/books/:id", updateBook);
+router.put("/books/:id", validate(UpdateBookSchema), updateBook);
 
 /**
  * @openapi
@@ -286,6 +292,10 @@ router.get("/orders", getAllOrders);
  *       500:
  *         description: Server error
  */
-router.put("/orders/:id/status", updateOrderStatus);
+router.put(
+  "/orders/:id/status",
+  validate(UpdateOrderStatusSchema),
+  updateOrderStatus,
+);
 
 export default router;

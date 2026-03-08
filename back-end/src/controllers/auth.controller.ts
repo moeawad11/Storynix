@@ -6,10 +6,6 @@ import jwt from "jsonwebtoken";
 export const register = async (req: Request, res: Response) => {
   try {
     let { firstName, lastName, email, password } = req.body;
-    if (!email || !password || !firstName || !lastName)
-      return res.status(400).json({ message: "All fields are required" });
-
-    email = email.toLowerCase();
 
     const userRepo = AppDataSource.getRepository(User);
 
@@ -35,7 +31,7 @@ export const register = async (req: Request, res: Response) => {
     const { password: _, ...userData } = user;
     res.status(201).json({ user: userData, token });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -43,11 +39,6 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     let { email, password } = req.body;
-
-    if (!email || !password)
-      return res.status(400).json({ message: "All fields are required" });
-
-    email = email.toLowerCase();
     const userRepo = AppDataSource.getRepository(User);
 
     const user = await userRepo
@@ -75,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
     const { password: _, ...userData } = user;
     res.status(200).json({ user: userData, token });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -6,7 +6,7 @@ interface DecodedToken {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: "user" | "admin";
 }
 
 export interface AuthRequest extends Request {

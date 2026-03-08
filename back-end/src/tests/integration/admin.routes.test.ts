@@ -103,7 +103,9 @@ describe("admin integration routes", () => {
       .send({ title: "Incomplete Book" })
       .expect(400);
 
-    expect(res.body.message).toBe("Missing required fields");
+    expect(res.body.message).toBe(
+      "Invalid input: expected string, received undefined",
+    );
   });
 
   test("POST /admin/books returns 201 and creates a book", async () => {

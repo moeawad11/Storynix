@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { CartItemSchema } from "../validators/cart.validator.js";
 import {
   addToCart,
   clearCart,
@@ -65,7 +67,7 @@ router.use(authenticate);
  *       500:
  *         description: Server error
  */
-router.post("/add", addToCart);
+router.post("/add", validate(CartItemSchema), addToCart);
 
 /**
  * @openapi
@@ -181,6 +183,6 @@ router.delete("/:bookId", removeFromCart);
  *       500:
  *         description: Error updating cart
  */
-router.put("/update", updateCartItem);
+router.put("/update", validate(CartItemSchema), updateCartItem);
 
 export default router;

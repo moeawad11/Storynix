@@ -35,12 +35,6 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     const { firstName, lastName, email, currentPassword, newPassword } =
       req.body;
 
-    if (!firstName || !lastName || !email) {
-      return res
-        .status(400)
-        .json({ message: "First name, last name, and email are required" });
-    }
-
     const userRepo = AppDataSource.getRepository(User);
     const user = await userRepo
       .createQueryBuilder("user")

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { getProfile, updateProfile } from "../controllers/user.controller.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { UpdateProfileSchema } from "../validators/user.validator.js";
 
 const router = Router();
 
@@ -103,6 +105,6 @@ router.get("/profile", getProfile);
  *       500:
  *         description: Server error
  */
-router.put("/profile", updateProfile);
+router.put("/profile", validate(UpdateProfileSchema), updateProfile);
 
 export default router;

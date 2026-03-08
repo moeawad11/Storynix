@@ -81,7 +81,7 @@ describe("order integration routes", () => {
       })
       .expect(400);
 
-    expect(res.body.message).toBe("Quantity must be greater than 0");
+    expect(res.body.message).toBe("Too small: expected number to be >=1");
   });
 
   test("POST /orders returns 400 for invalid bookId", async () => {
@@ -95,7 +95,7 @@ describe("order integration routes", () => {
       })
       .expect(400);
 
-    expect(res.body.message).toBe("Invalid bookId");
+    expect(res.body.message).toBe("Too small: expected number to be >=1");
   });
 
   test("POST /orders returns 201 with valid token + seeded book", async () => {

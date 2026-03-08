@@ -8,10 +8,6 @@ export const addToCart = async (req: AuthRequest, res: Response) => {
   try {
     const { bookId, quantity } = req.body;
 
-    if (!bookId || !quantity) {
-      return res.status(400).json({ message: "Book ID and quantity required" });
-    }
-
     const cartRepo = AppDataSource.getRepository(Cart);
     const bookRepo = AppDataSource.getRepository(Book);
 
@@ -113,10 +109,6 @@ export const removeFromCart = async (req: AuthRequest, res: Response) => {
 export const updateCartItem = async (req: AuthRequest, res: Response) => {
   try {
     const { bookId, quantity } = req.body;
-
-    if (!bookId || !quantity) {
-      return res.status(400).json({ message: "Book ID and quantity required" });
-    }
 
     const cartRepo = AppDataSource.getRepository(Cart);
 

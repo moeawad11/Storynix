@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { register, login } from "../controllers/auth.controller.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { RegisterSchema, LoginSchema } from "../validators/auth.validator.js";
 
 const router = Router();
 
@@ -62,7 +64,7 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.post("/register", register);
+router.post("/register", validate(RegisterSchema), register);
 
 /**
  * @openapi
@@ -108,6 +110,6 @@ router.post("/register", register);
  *       500:
  *         description: Server error
  */
-router.post("/login", login);
+router.post("/login", validate(LoginSchema), login);
 
 export default router;

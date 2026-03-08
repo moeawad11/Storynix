@@ -6,6 +6,8 @@ import {
   processPaymentIntent,
 } from "../controllers/order.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { CreateOrderSchema } from "../validators/order.validator.js";
 
 const router = Router();
 
@@ -79,7 +81,7 @@ router.use(authenticate);
  *       500:
  *         description: Server error
  */
-router.post("/", createOrder);
+router.post("/", validate(CreateOrderSchema), createOrder);
 
 /**
  * @openapi

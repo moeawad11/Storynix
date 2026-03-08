@@ -40,7 +40,9 @@ describe("auth routes integration", () => {
       })
       .expect(400);
 
-    expect(res.body.message).toBe("All fields are required");
+    expect(res.body.message).toBe(
+      "Invalid input: expected string, received undefined",
+    );
   });
 
   test("POST /register returns 409 for duplicate email", async () => {
@@ -105,6 +107,8 @@ describe("auth routes integration", () => {
       .send({ email: TEST_EMAIL })
       .expect(400);
 
-    expect(res.body.message).toBe("All fields are required");
+    expect(res.body.message).toBe(
+      "Invalid input: expected string, received undefined",
+    );
   });
 });

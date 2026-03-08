@@ -78,16 +78,6 @@ export const createBook = async (req: AuthRequest, res: Response) => {
     const { title, author, description, isbn, price, stockQuantity, images } =
       req.body;
 
-    if (
-      !title ||
-      !author ||
-      !isbn ||
-      price === undefined ||
-      stockQuantity === undefined
-    ) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
     const bookRepo = AppDataSource.getRepository(Book);
 
     const existingBook = await bookRepo.findOneBy({ isbn });
@@ -128,16 +118,6 @@ export const updateBook = async (req: AuthRequest, res: Response) => {
   try {
     const { title, author, description, isbn, price, stockQuantity, images } =
       req.body;
-
-    if (
-      !title ||
-      !author ||
-      !isbn ||
-      price === undefined ||
-      stockQuantity === undefined
-    ) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
 
     const bookRepo = AppDataSource.getRepository(Book);
 
