@@ -185,7 +185,10 @@ export const processPaymentIntent = async (req: AuthRequest, res: Response) => {
 
     await AppDataSource.transaction(async (manager) => {
       for (const item of updatedOrder.orderItems as any[]) {
-        const book = await manager.findOneBy(Book, { id: item.bookId });
+        const book = await manager.findOne(Book, {
+          where: { id: item.bookId },
+          lock: { mode: "pessimistic_write" },
+        });
 
         if (!book)
           throw new Error(

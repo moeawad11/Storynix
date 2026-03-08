@@ -27,7 +27,6 @@ export const getBooks = async (req: Request, res: Response) => {
     if (author && typeof author == "string") where.author = author;
 
     if (search && typeof search == "string") where.title = ILike(`%${search}%`);
-
     const [books, total] = await bookRepo.findAndCount({
       where,
       take: limit,

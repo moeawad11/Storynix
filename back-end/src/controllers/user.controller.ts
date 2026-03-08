@@ -2,6 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware.js";
 import { AppDataSource } from "../config/data-source.js";
 import { User } from "../entity/User.js";
+import bcrypt from "bcrypt";
 
 export const getProfile = async (req: AuthRequest, res: Response) => {
   try {
@@ -76,7 +77,8 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
           .json({ message: "Current password is incorrect" });
       }
 
-      user.password = newPassword;
+      const rounds = process.env.NODE_ENV === "test" ? 1 : 12;
+      user.password = await bcrypt.hash(newPassword, rounds);
     }
 
     await userRepo.save(user);

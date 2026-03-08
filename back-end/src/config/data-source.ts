@@ -5,7 +5,7 @@ import { User } from "../entity/User.js";
 import { Book } from "../entity/Book.js";
 import { Order } from "../entity/Order.js";
 import { Cart } from "../entity/Cart.js";
-import { Initial1772755945265 } from "../migration/1772755945265-InitialSchema.js";
+import { Initial1772755945265 } from "../migration/1772755945265-Initial.js";
 
 export const AppDataSource = new DataSource({
   type: "postgres",

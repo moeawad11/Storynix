@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
   Relation,
   BeforeInsert,
-  BeforeUpdate,
 } from "typeorm";
 import { Order } from "./Order.js";
 import bcrypt from "bcrypt";
@@ -46,13 +45,9 @@ export class User {
   updatedAt!: Date;
 
   @BeforeInsert()
-  @BeforeUpdate()
   async hashPassword(): Promise<void> {
-    const bcryptRegex = /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/;
-    if (!bcryptRegex.test(this.password)) {
-      const rounds = process.env.NODE_ENV === "test" ? 1 : 12;
-      this.password = await bcrypt.hash(this.password, rounds);
-    }
+    const rounds = process.env.NODE_ENV === "test" ? 1 : 12;
+    this.password = await bcrypt.hash(this.password, rounds);
   }
 
   async comparePassword(password: string): Promise<boolean> {
