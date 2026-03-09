@@ -8,7 +8,7 @@ import orderRoutes from "./routes/order.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import { setupSwagger } from "./config/swagger.js";
-import securityMiddleWare from "./middleware/security.middleware.js";
+import securityMiddleWare, { authRateLimiter } from "./middleware/security.middleware.js";
 
 export const app = express();
 
@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 app.use(securityMiddleWare);
 setupSwagger(app);
 
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRateLimiter, authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/orders", orderRoutes);
