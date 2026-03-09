@@ -24,7 +24,7 @@ router.use(authenticate);
  *     tags:
  *       - Users
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Authenticated user profile data
@@ -39,7 +39,7 @@ router.use(authenticate);
  *                 user:
  *                   $ref: '#/components/schemas/User'
  *       401:
- *         description: Unauthorized — missing or invalid token
+ *         description: Not authenticated — no valid session cookie
  *       500:
  *         description: Server error
  */
@@ -54,7 +54,7 @@ router.get("/profile", getProfile);
  *     tags:
  *       - Users
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -97,7 +97,7 @@ router.get("/profile", getProfile);
  *       400:
  *         description: Missing required fields or current password not provided when changing password
  *       401:
- *         description: Unauthorized or incorrect current password
+ *         description: Not authenticated or incorrect current password
  *       404:
  *         description: User not found
  *       409:

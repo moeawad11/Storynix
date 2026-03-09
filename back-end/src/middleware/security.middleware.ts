@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { Router } from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 
 const securityMiddleWare = Router();
 
@@ -13,6 +14,7 @@ securityMiddleWare.use(
 );
 
 securityMiddleWare.use(helmet());
+securityMiddleWare.use(cookieParser());
 securityMiddleWare.use(express.json({ limit: "10kb" }));
 
 export const authRateLimiter = rateLimit({
@@ -21,6 +23,7 @@ export const authRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many attempts, please try again later." },
+  skip: () => process.env.NODE_ENV === "test",
 });
 
 export default securityMiddleWare;

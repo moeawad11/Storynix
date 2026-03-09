@@ -29,7 +29,7 @@ describe("admin integration routes", () => {
       .post("/api/auth/login")
       .send({ email: ADMIN_EMAIL, password: "P@ssword123" })
       .expect(200);
-    adminToken = adminLogin.body.token;
+    adminToken = adminLogin.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
 
     await supertest(app).post("/api/auth/register").send({
       firstName: "Regular",
@@ -41,7 +41,7 @@ describe("admin integration routes", () => {
       .post("/api/auth/login")
       .send({ email: REGULAR_EMAIL, password: "P@ssword123" })
       .expect(200);
-    regularToken = regularLogin.body.token;
+    regularToken = regularLogin.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
 
     const bookRepo = AppDataSource.getRepository(Book);
     const book = bookRepo.create({
@@ -69,13 +69,13 @@ describe("admin integration routes", () => {
 
   test("GET /admin/stats returns 401 without token", async () => {
     const res = await supertest(app).get("/api/admin/stats").expect(401);
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("GET /admin/stats returns 403 for regular user", async () => {
     const res = await supertest(app)
       .get("/api/admin/stats")
-      .set("Authorization", `Bearer ${regularToken}`)
+      .set("Cookie", regularToken)
       .expect(403);
 
     expect(res.body.message).toBe(
@@ -86,7 +86,7 @@ describe("admin integration routes", () => {
   test("GET /admin/stats returns 200 with dashboard stats for admin", async () => {
     const res = await supertest(app)
       .get("/api/admin/stats")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .expect(200);
 
     expect(res.body).toHaveProperty("totalOrders");
@@ -99,7 +99,7 @@ describe("admin integration routes", () => {
   test("POST /admin/books returns 400 for missing required fields", async () => {
     const res = await supertest(app)
       .post("/api/admin/books")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .send({ title: "Incomplete Book" })
       .expect(400);
 
@@ -112,7 +112,7 @@ describe("admin integration routes", () => {
     const isbn = `NEW-${Date.now()}`;
     const res = await supertest(app)
       .post("/api/admin/books")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .send({
         title: "New Admin Book",
         author: "New Author",
@@ -137,7 +137,7 @@ describe("admin integration routes", () => {
 
     const res = await supertest(app)
       .post("/api/admin/books")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .send({
         title: "Duplicate",
         author: "Author",
@@ -153,7 +153,7 @@ describe("admin integration routes", () => {
   test("PUT /admin/books/:id returns 404 for non-existent book", async () => {
     const res = await supertest(app)
       .put("/api/admin/books/999999999")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .send({
         title: "Ghost",
         author: "Ghost",
@@ -169,7 +169,7 @@ describe("admin integration routes", () => {
   test("PUT /admin/books/:id returns 200 and updates book", async () => {
     const res = await supertest(app)
       .put(`/api/admin/books/${seededBookId}`)
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .send({
         title: "Updated Admin Book",
         author: "Updated Author",
@@ -186,7 +186,7 @@ describe("admin integration routes", () => {
   test("GET /admin/orders returns 200 with all orders for admin", async () => {
     const res = await supertest(app)
       .get("/api/admin/orders")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .expect(200);
 
     expect(Array.isArray(res.body)).toBe(true);
@@ -195,7 +195,7 @@ describe("admin integration routes", () => {
   test("DELETE /admin/books/:id returns 200 and deletes the book", async () => {
     const res = await supertest(app)
       .delete(`/api/admin/books/${seededBookId}`)
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Cookie", adminToken)
       .expect(200);
 
     expect(res.body.message).toMatch(/deleted successfully/i);

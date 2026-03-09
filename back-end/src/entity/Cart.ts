@@ -6,8 +6,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Relation,
 } from "typeorm";
+import type { Relation } from "typeorm";
 import { User } from "./User.js";
 import { Book } from "./Book.js";
 

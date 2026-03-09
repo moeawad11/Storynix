@@ -29,7 +29,7 @@ router.use(authenticate);
  *     tags:
  *       - Orders
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -77,7 +77,7 @@ router.use(authenticate);
  *       400:
  *         description: Invalid or missing fields
  *       401:
- *         description: User not authenticated
+ *         description: Not authenticated — no valid session cookie
  *       500:
  *         description: Server error
  */
@@ -92,7 +92,7 @@ router.post("/", validate(CreateOrderSchema), createOrder);
  *     tags:
  *       - Orders
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Orders retrieved successfully
@@ -106,7 +106,7 @@ router.post("/", validate(CreateOrderSchema), createOrder);
  *                   items:
  *                     $ref: '#/components/schemas/Order'
  *       401:
- *         description: Unauthorized — token missing or invalid
+ *         description: Not authenticated — no valid session cookie
  *       500:
  *         description: Server error while fetching orders
  */
@@ -121,7 +121,7 @@ router.get("/myorders", getMyOrders);
  *     tags:
  *       - Orders
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -143,7 +143,7 @@ router.get("/myorders", getMyOrders);
  *       400:
  *         description: Invalid order ID
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       404:
  *         description: Order not found
  *       500:
@@ -160,7 +160,7 @@ router.get("/:id", getOrderById);
  *     tags:
  *       - Orders
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -191,7 +191,7 @@ router.get("/:id", getOrderById);
  *       400:
  *         description: Invalid request or already paid
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       404:
  *         description: Order not found
  *       500:

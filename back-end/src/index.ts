@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import { initializeDB } from "./config/database.js";
@@ -8,7 +9,9 @@ import orderRoutes from "./routes/order.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import { setupSwagger } from "./config/swagger.js";
-import securityMiddleWare, { authRateLimiter } from "./middleware/security.middleware.js";
+import securityMiddleWare, {
+  authRateLimiter,
+} from "./middleware/security.middleware.js";
 
 export const app = express();
 

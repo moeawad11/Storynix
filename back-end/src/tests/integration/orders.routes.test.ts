@@ -43,10 +43,10 @@ describe("order integration routes", () => {
       .expect(200);
 
     expect(loginRes.body.user.email).toBe(TEST_EMAIL);
-    expect(loginRes.body.token).toEqual(expect.any(String));
+    expect(loginRes.headers["set-cookie"]?.[0]).toMatch(/^token=/);
     expect(loginRes.body.user.password).toBeUndefined();
 
-    token = loginRes.body.token;
+    token = loginRes.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
     testUserId = loginRes.body.user.id;
   });
 
@@ -67,13 +67,13 @@ describe("order integration routes", () => {
   test("POST /orders returns 401 without token", async () => {
     const res = await supertest(app).post("/api/orders").expect(401);
 
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("POST /orders returns 400 for invalid payload/out-of-stock", async () => {
     const res = await supertest(app)
       .post("/api/orders")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         orderItems: [{ bookId: seededBookId, quantity: -2 }],
         shippingAddress: "Test Address",
@@ -87,7 +87,7 @@ describe("order integration routes", () => {
   test("POST /orders returns 400 for invalid bookId", async () => {
     const res = await supertest(app)
       .post("/api/orders")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         orderItems: [{ bookId: -2, quantity: -2 }],
         shippingAddress: "Test Address",
@@ -104,7 +104,7 @@ describe("order integration routes", () => {
     ];
     const res = await supertest(app)
       .post("/api/orders")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         orderItems: [{ bookId: seededBookId, quantity: 3 }],
         shippingAddress: "Test Address",
@@ -123,7 +123,7 @@ describe("order integration routes", () => {
   test("GET /orders/myorders returns 200 with user's orders", async () => {
     const res = await supertest(app)
       .get("/api/orders/myorders")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(Array.isArray(res.body.orders)).toBe(true);
@@ -133,13 +133,13 @@ describe("order integration routes", () => {
   test("GET /orders/myorders returns 401 without tokens", async () => {
     const res = await supertest(app).get("/api/orders/myorders").expect(401);
 
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("GET /orders/:id returns 400 for invalid ID format", async () => {
     const res = await supertest(app)
       .get("/api/orders/abc")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(400);
 
     expect(res.body.message).toBe("Invalid order ID format.");
@@ -148,7 +148,7 @@ describe("order integration routes", () => {
   test("GET /orders/:id returns 200 for user's own order", async () => {
     const res = await supertest(app)
       .get(`/api/orders/${orderId}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(res.body.order.id).toBe(orderId);
@@ -168,11 +168,12 @@ describe("order integration routes", () => {
       password: "Password123!",
     });
 
-    const userBToken = loginResB.body.token;
+    const userBToken =
+      loginResB.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
 
     const res = await supertest(app)
       .get(`/api/orders/${orderId}`)
-      .set("Authorization", `Bearer ${userBToken}`)
+      .set("Cookie", userBToken)
       .expect(404);
 
     expect(res.body.message).toMatch(/not found/i);

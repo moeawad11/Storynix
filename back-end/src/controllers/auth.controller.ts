@@ -29,7 +29,15 @@ export const register = async (req: Request, res: Response) => {
     );
 
     const { password: _, ...userData } = user;
-    res.status(201).json({ user: userData, token });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000,
+      })
+      .status(201)
+      .json({ user: userData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -64,9 +72,26 @@ export const login = async (req: Request, res: Response) => {
     );
 
     const { password: _, ...userData } = user;
-    res.status(200).json({ user: userData, token });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({ user: userData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
 };

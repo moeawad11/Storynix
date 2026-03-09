@@ -6,9 +6,9 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Relation,
   Index,
 } from "typeorm";
+import type { Relation } from "typeorm";
 import { User } from "./User.js";
 
 interface OrderItem {

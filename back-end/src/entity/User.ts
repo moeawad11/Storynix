@@ -5,9 +5,9 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  Relation,
   BeforeInsert,
 } from "typeorm";
+import type { Relation } from "typeorm";
 import { Order } from "./Order.js";
 import bcrypt from "bcrypt";
 import { Cart } from "./Cart.js";

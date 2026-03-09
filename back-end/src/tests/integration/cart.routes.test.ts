@@ -35,7 +35,7 @@ describe("cart integration routes", () => {
       .send({ email: TEST_EMAIL, password: "P@ssword123" })
       .expect(200);
 
-    token = loginRes.body.token;
+    token = loginRes.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
   });
 
   afterAll(async () => {
@@ -50,13 +50,13 @@ describe("cart integration routes", () => {
 
   test("POST /cart/add returns 401 without token", async () => {
     const res = await supertest(app).post("/api/cart/add").expect(401);
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("POST /cart/add returns 400 for missing bookId or quantity", async () => {
     const res = await supertest(app)
       .post("/api/cart/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId })
       .expect(400);
 
@@ -68,7 +68,7 @@ describe("cart integration routes", () => {
   test("POST /cart/add returns 404 for non-existent book", async () => {
     const res = await supertest(app)
       .post("/api/cart/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: 999999999, quantity: 1 })
       .expect(404);
 
@@ -78,7 +78,7 @@ describe("cart integration routes", () => {
   test("POST /cart/add returns 200 and adds item to cart", async () => {
     const res = await supertest(app)
       .post("/api/cart/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId, quantity: 3 })
       .expect(200);
 
@@ -90,7 +90,7 @@ describe("cart integration routes", () => {
   test("POST /cart/add returns 400 when quantity would exceed stock", async () => {
     const res = await supertest(app)
       .post("/api/cart/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId, quantity: 9 })
       .expect(400);
 
@@ -100,7 +100,7 @@ describe("cart integration routes", () => {
   test("GET /cart returns 200 with the user's cart items", async () => {
     const res = await supertest(app)
       .get("/api/cart")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(Array.isArray(res.body)).toBe(true);
@@ -111,7 +111,7 @@ describe("cart integration routes", () => {
   test("PUT /cart/update returns 200 and updates cart item quantity", async () => {
     const res = await supertest(app)
       .put("/api/cart/update")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId, quantity: 2 })
       .expect(200);
 
@@ -122,7 +122,7 @@ describe("cart integration routes", () => {
   test("PUT /cart/update returns 400 for missing fields", async () => {
     const res = await supertest(app)
       .put("/api/cart/update")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId })
       .expect(400);
 
@@ -134,7 +134,7 @@ describe("cart integration routes", () => {
   test("PUT /cart/update returns 404 for item not in cart", async () => {
     const res = await supertest(app)
       .put("/api/cart/update")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: 999999999, quantity: 1 })
       .expect(404);
 
@@ -144,7 +144,7 @@ describe("cart integration routes", () => {
   test("DELETE /cart/:bookId returns 200 and removes item", async () => {
     const res = await supertest(app)
       .delete(`/api/cart/${seededBookId}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(res.body.message).toBe("Item removed from cart");
@@ -153,12 +153,12 @@ describe("cart integration routes", () => {
   test("DELETE /cart/clear returns 200 and clears the cart", async () => {
     await supertest(app)
       .post("/api/cart/add")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ bookId: seededBookId, quantity: 1 });
 
     const res = await supertest(app)
       .delete("/api/cart/clear")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(res.body.message).toBe("Cart cleared successfully");

@@ -29,7 +29,7 @@ describe("user integration routes", () => {
       .send({ email: TEST_EMAIL, password: "P@ssword123" })
       .expect(200);
 
-    token = loginRes.body.token;
+    token = loginRes.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
   });
 
   afterAll(async () => {
@@ -41,13 +41,13 @@ describe("user integration routes", () => {
 
   test("GET /users/profile returns 401 without token", async () => {
     const res = await supertest(app).get("/api/users/profile").expect(401);
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("GET /users/profile returns 200 with user data from token", async () => {
     const res = await supertest(app)
       .get("/api/users/profile")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .expect(200);
 
     expect(res.body.user.email).toBe(TEST_EMAIL);
@@ -56,13 +56,13 @@ describe("user integration routes", () => {
 
   test("PUT /users/profile returns 401 without token", async () => {
     const res = await supertest(app).put("/api/users/profile").expect(401);
-    expect(res.body.message).toBe("Authorization header missing");
+    expect(res.body.message).toBe("Not authenticated");
   });
 
   test("PUT /users/profile returns 400 for missing required fields", async () => {
     const res = await supertest(app)
       .put("/api/users/profile")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({ firstName: "User" })
       .expect(400);
 
@@ -74,7 +74,7 @@ describe("user integration routes", () => {
   test("PUT /users/profile returns 409 when email is taken by another user", async () => {
     const res = await supertest(app)
       .put("/api/users/profile")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         firstName: "User",
         lastName: "Tester",
@@ -88,7 +88,7 @@ describe("user integration routes", () => {
   test("PUT /users/profile returns 401 when current password is wrong", async () => {
     const res = await supertest(app)
       .put("/api/users/profile")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         firstName: "User",
         lastName: "Tester",
@@ -104,7 +104,7 @@ describe("user integration routes", () => {
   test("PUT /users/profile returns 200 and updates name successfully", async () => {
     const res = await supertest(app)
       .put("/api/users/profile")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Cookie", token)
       .send({
         firstName: "Updated",
         lastName: "Name",

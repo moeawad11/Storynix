@@ -25,7 +25,7 @@ describe("auth routes integration", () => {
       })
       .expect(201);
 
-    expect(res.body.token).toEqual(expect.any(String));
+    expect(res.headers["set-cookie"]?.[0]).toMatch(/^token=/);
     expect(res.body.user.email).toBe(TEST_EMAIL);
     expect(res.body.user.password).toBeUndefined();
   });
@@ -70,7 +70,7 @@ describe("auth routes integration", () => {
       })
       .expect(200);
 
-    expect(res.body.token).toEqual(expect.any(String));
+    expect(res.headers["set-cookie"]?.[0]).toMatch(/^token=/);
     expect(res.body.user.email).toBe(TEST_EMAIL);
     expect(res.body.user.password).toBeUndefined();
   });
@@ -110,5 +110,93 @@ describe("auth routes integration", () => {
     expect(res.body.message).toBe(
       "Invalid input: expected string, received undefined",
     );
+  });
+
+  test("POST /register sets httpOnly cookie with correct flags", async () => {
+    const res = await supertest(app)
+      .post("/api/auth/register")
+      .send({
+        firstName: "Cookie",
+        lastName: "Tester",
+        email: `cookie_flags_${Date.now()}@storynix.test`,
+        password: "P@ssword123",
+      })
+      .expect(201);
+
+    // Clean up
+    await AppDataSource.getRepository(User).delete({
+      email: res.body.user.email,
+    });
+
+    const cookieHeader = res.headers["set-cookie"]?.[0] ?? "";
+    expect(cookieHeader.toLowerCase()).toMatch(/httponly/);
+    expect(cookieHeader.toLowerCase()).toMatch(/samesite=lax/);
+    expect(cookieHeader).toMatch(/^token=/);
+  });
+
+  test("POST /logout returns 200 and clears the token cookie", async () => {
+    const loginRes = await supertest(app)
+      .post("/api/auth/login")
+      .send({ email: TEST_EMAIL, password: "P@ssword123" })
+      .expect(200);
+
+    const cookie = loginRes.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
+
+    const logoutRes = await supertest(app)
+      .post("/api/auth/logout")
+      .set("Cookie", cookie)
+      .expect(200);
+
+    expect(logoutRes.body.message).toBe("Logged out successfully");
+
+    const clearedCookie = logoutRes.headers["set-cookie"]?.[0] ?? "";
+    expect(clearedCookie).toMatch(/token=/);
+    expect(clearedCookie.toLowerCase()).toMatch(/expires|max-age=0/);
+  });
+
+  test("accessing protected route after logout returns 401", async () => {
+    const loginRes = await supertest(app)
+      .post("/api/auth/login")
+      .send({ email: TEST_EMAIL, password: "P@ssword123" })
+      .expect(200);
+
+    const cookie = loginRes.headers["set-cookie"]?.[0]?.split(";")[0] ?? "";
+
+    await supertest(app)
+      .get("/api/users/profile")
+      .set("Cookie", cookie)
+      .expect(200);
+
+    await supertest(app)
+      .post("/api/auth/logout")
+      .set("Cookie", cookie)
+      .expect(200);
+
+    const res = await supertest(app).get("/api/users/profile").expect(401);
+    expect(res.body.message).toBe("Not authenticated");
+  });
+
+  test("auth routes return 429 after exceeding rate limit", async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = "production";
+
+    try {
+      for (let i = 0; i < 10; i++) {
+        await supertest(app)
+          .post("/api/auth/login")
+          .send({ email: "ratelimit@storynix.test", password: "wrong" });
+      }
+
+      const res = await supertest(app)
+        .post("/api/auth/login")
+        .send({ email: "ratelimit@storynix.test", password: "wrong" });
+
+      expect(res.status).toBe(429);
+      expect(res.body.message).toBe(
+        "Too many attempts, please try again later.",
+      );
+    } finally {
+      process.env.NODE_ENV = originalEnv;
+    }
   });
 });

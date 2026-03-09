@@ -38,7 +38,7 @@ router.use(authorize(["admin"]));
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Dashboard statistics retrieved successfully
@@ -81,7 +81,7 @@ router.use(authorize(["admin"]));
  *                         type: string
  *                         example: "John Doe"
  *       401:
- *         description: Unauthorized — missing or invalid token
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden — user is not an admin
  *       500:
@@ -98,7 +98,7 @@ router.get("/stats", getDashboardStats);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -141,7 +141,7 @@ router.get("/stats", getDashboardStats);
  *       400:
  *         description: Missing required fields
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden — user is not an admin
  *       409:
@@ -160,7 +160,7 @@ router.post("/books", validate(CreateBookSchema), createBook);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -180,7 +180,7 @@ router.post("/books", validate(CreateBookSchema), createBook);
  *       400:
  *         description: Invalid book ID or missing fields
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden
  *       404:
@@ -199,7 +199,7 @@ router.put("/books/:id", validate(UpdateBookSchema), updateBook);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -213,7 +213,7 @@ router.put("/books/:id", validate(UpdateBookSchema), updateBook);
  *       400:
  *         description: Invalid book ID
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden — not an admin
  *       404:
@@ -232,7 +232,7 @@ router.delete("/books/:id", deleteBook);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Orders retrieved successfully
@@ -243,7 +243,7 @@ router.delete("/books/:id", deleteBook);
  *               items:
  *                 $ref: '#/components/schemas/Order'
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden
  *       500:
@@ -260,7 +260,7 @@ router.get("/orders", getAllOrders);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -284,7 +284,7 @@ router.get("/orders", getAllOrders);
  *       400:
  *         description: Invalid order ID
  *       401:
- *         description: Unauthorized
+ *         description: Not authenticated — no valid session cookie
  *       403:
  *         description: Forbidden — not an admin
  *       404:

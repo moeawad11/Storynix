@@ -30,7 +30,7 @@ router.use(authenticate);
  *     tags:
  *       - Cart
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -78,7 +78,7 @@ router.post("/add", validate(CartItemSchema), addToCart);
  *     tags:
  *       - Cart
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Cart fetched successfully
@@ -102,7 +102,7 @@ router.get("/", getCart);
  *     tags:
  *       - Cart
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Cart cleared successfully
@@ -120,7 +120,7 @@ router.delete("/clear", clearCart);
  *     tags:
  *       - Cart
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - name: bookId
  *         in: path
@@ -146,7 +146,7 @@ router.delete("/:bookId", removeFromCart);
  *     tags:
  *       - Cart
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
